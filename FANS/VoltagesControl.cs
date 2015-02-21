@@ -1,0 +1,299 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Globalization;
+using System.Windows.Forms;
+using FANS.classes;
+namespace FANS
+{
+    public partial class VoltagesControl : Form
+    {
+        private ComboBox[] DCRanges, ACRanges;
+        
+        private System.EventHandler<System.EventArgs>[] DC_ComboBoxEvents, AC_ComboBoxEvents;
+        private System.EventHandler[] AC_ComboBoxEventsForAutoRange;
+        private VoltageMeasurement _VoltageMeasurementController;
+        public VoltagesControl()
+        {
+            InitializeComponent();
+            DCRanges = new ComboBox[4] { Channel_1_DC_Range_combobox, Channel_2_DC_Range_combobox, Channel_3_DC_Range_combobox, Channel_4_DC_Range_combobox };
+            ACRanges = new ComboBox[4] { Channel_1_AC_Range_combobox, Channel_2_AC_Range_combobox, Channel_3_AC_Range_combobox, Channel_4_AC_Range_combobox };
+            DC_ComboBoxEvents = new System.EventHandler<System.EventArgs>[] { new System.EventHandler<System.EventArgs>(Channel_1_DC_Range_combobox_SelectedIndexChanged), new System.EventHandler<System.EventArgs>(Channel_2_DC_Range_combobox_SelectedIndexChanged), new System.EventHandler<System.EventArgs>(Channel_3_DC_Range_combobox_SelectedIndexChanged), new System.EventHandler<System.EventArgs>(Channel_4_DC_Range_combobox_SelectedIndexChanged) };
+            AC_ComboBoxEvents = new System.EventHandler<System.EventArgs>[] { new System.EventHandler<System.EventArgs>(Channel_1_AC_Range_combobox_SelectedIndexChanged), new System.EventHandler<System.EventArgs>(Channel_2_AC_Range_combobox_SelectedIndexChanged), new System.EventHandler<System.EventArgs>(Channel_3_AC_Range_combobox_SelectedIndexChanged), new System.EventHandler<System.EventArgs>(Channel_4_AC_Range_combobox_SelectedIndexChanged) };
+            AC_ComboBoxEventsForAutoRange = new System.EventHandler[] { new System.EventHandler(Channel_1_AC_Range_combobox_SelectedIndexChanged), new System.EventHandler(Channel_2_AC_Range_combobox_SelectedIndexChanged), new System.EventHandler(Channel_3_AC_Range_combobox_SelectedIndexChanged), new System.EventHandler(Channel_4_AC_Range_combobox_SelectedIndexChanged) };
+            foreach (ComboBox rgn in DCRanges)
+                rgn.SelectedIndex = 3;
+            foreach (ComboBox rgn in ACRanges)
+                rgn.SelectedIndex = 3;
+            Rload_ComboBox.SelectedIndex = 4;
+            _VoltageMeasurementController = new VoltageMeasurement();
+            
+            
+        }
+
+        public void StartTimer()
+        {
+            if (this.Visible) timer1.Start();
+        }
+
+        public void StopTimer()
+        {
+            timer1.Stop();
+        }
+    //making form movable
+    
+    
+    private const int WM_NCHITTEST = 0x84;
+    private const int HTCLIENT = 0x1;
+    private const int HTCAPTION = 0x2;
+    protected override void WndProc(ref Message message)
+    {
+        base.WndProc(ref message);
+
+        if (message.Msg == WM_NCHITTEST && (int)message.Result == HTCLIENT)
+            message.Result = (IntPtr)HTCAPTION;
+    }
+    //--------------------------
+
+//--------------------------makingThreadSafeTextSettingForTextBoxes
+    delegate void SetTextCallback(TextBox a, string text);
+    private void SetText(TextBox a,string text)
+    {
+        // InvokeRequired required compares the thread ID of the
+        // calling thread to the thread ID of the creating thread.
+        // If these threads are different, it returns true.
+        if (a.InvokeRequired)
+        {
+            SetTextCallback d = new SetTextCallback(SetText);
+            this.BeginInvoke(d, new object[] {a, text});
+        }
+        else
+        {
+            a.Text = text;
+        }
+    }
+    public static string GetComboBoxText(ComboBox box)
+    {
+        if (box.InvokeRequired)
+        {
+            Func<ComboBox, string> deleg = new Func<ComboBox, string>(GetComboBoxText);
+            return box.Invoke(deleg, new object[] { box }).ToString();
+
+        }
+        else
+        {
+            return box.Text;
+        }
+    }
+
+
+    
+    private void VoltageControl_closing(object sender, FormClosingEventArgs e)
+    {
+        e.Cancel = true;
+        this.Hide();
+        AllCustomEvents.Instance.VoltagesMeasurementDone -= VoltagesArrived;
+        timer1.Stop();
+        //AllCustomEvents.Instance.VoltagesMeasurementDone -= VoltagesArrived;
+        }
+
+
+    private void Averaging_comboBox_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (MeasurementThread.Instance.MeasurementRunning)
+        {
+            AllCustomEvents.Instance.MeasurementFinished += Averaging_comboBox_SelectedIndexChanged;
+            Averaging_comboBox.Enabled = false;
+            return;
+        }
+        else
+        {
+            AllCustomEvents.Instance.MeasurementFinished -= Averaging_comboBox_SelectedIndexChanged;
+            Averaging_comboBox.Enabled = true;
+        }
+        int aver ;
+        try
+        {
+            aver = Convert.ToInt32(Averaging_comboBox.Text);
+        }
+        catch (Exception ee)
+        {
+            aver = 100;
+            Averaging_comboBox.Text = "100";
+            MessageBox.Show(ee.Message);
+        }
+        if (aver > 1000) Averaging_comboBox.Text = "1000";
+        if (aver < 1) Averaging_comboBox.Text = "1000";
+
+        AI_Channels.Instance.DC_Average=aver;
+    }
+
+    private void Channel_1_DC_Range_combobox_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        DC_Range_combobox_SelectedIndexChanged(1);
+    }
+    private void Channel_2_DC_Range_combobox_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        DC_Range_combobox_SelectedIndexChanged(2);
+    }
+    private void Channel_3_DC_Range_combobox_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        DC_Range_combobox_SelectedIndexChanged(3);
+    }
+    private void Channel_4_DC_Range_combobox_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        DC_Range_combobox_SelectedIndexChanged(4);
+    }
+    private void DC_Range_combobox_SelectedIndexChanged(int NumberOfChannel)
+    {
+        if (MeasurementThread.Instance.MeasurementRunning)
+        {
+            AllCustomEvents.Instance.MeasurementFinished += DC_ComboBoxEvents[NumberOfChannel - 1];
+            DCRanges[NumberOfChannel - 1].Enabled = false;
+            return;
+        }
+        else
+        {
+            AllCustomEvents.Instance.MeasurementFinished -= DC_ComboBoxEvents[NumberOfChannel - 1];
+            DCRanges[NumberOfChannel - 1].Enabled = true;
+        }
+        string RangeText = DCRanges[NumberOfChannel - 1].Text;
+        RangeText = RangeText.Replace("V", "");
+        if (RangeText.Contains('±')) AI_Channels.Instance.ChannelArray[NumberOfChannel - 1].isBiPolarDC = true;
+        else AI_Channels.Instance.ChannelArray[NumberOfChannel - 1].isBiPolarDC = false;
+        RangeText = RangeText.Replace("±", "");
+        double Range;
+        if (RangeText == "AUTO") Range = 0;
+
+        else Range = Convert.ToDouble(RangeText, ImportantConstants.NumberFormat());
+        AI_Channels.Instance.ChannelArray[NumberOfChannel - 1].DC_Range = Range;
+    }
+
+    private void Channel_1_AC_Range_combobox_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        AC_Range_combobox_SelectedIndexChanged(1);
+    }
+    private void Channel_2_AC_Range_combobox_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        AC_Range_combobox_SelectedIndexChanged(2);
+    }
+    private void Channel_3_AC_Range_combobox_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        AC_Range_combobox_SelectedIndexChanged(3);
+    }
+    private void Channel_4_AC_Range_combobox_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        AC_Range_combobox_SelectedIndexChanged(4);
+    }
+
+    private void AC_Range_combobox_SelectedIndexChanged(int NumberOfChannel)
+    {
+        if (MeasurementThread.Instance.MeasurementRunning)
+        {
+            AllCustomEvents.Instance.MeasurementFinished += AC_ComboBoxEvents[NumberOfChannel - 1];
+            ACRanges[NumberOfChannel - 1].Enabled = false;
+            return;
+        }
+        else
+        {
+            AllCustomEvents.Instance.MeasurementFinished -= AC_ComboBoxEvents[NumberOfChannel - 1];
+            ACRanges[NumberOfChannel - 1].Enabled = true;
+        }
+        string RangeText = ACRanges[NumberOfChannel - 1].Text;
+        RangeText = RangeText.Replace("V", "");
+        if (RangeText.Contains('±')) AI_Channels.Instance.ChannelArray[NumberOfChannel - 1].isBiPolarAC = true;
+        else AI_Channels.Instance.ChannelArray[NumberOfChannel - 1].isBiPolarAC = false;
+        RangeText = RangeText.Replace("±", "");
+
+        if (RangeText == "AUTO")
+        {
+            ACRanges[NumberOfChannel - 1].Enabled = false;
+            AllCustomEvents.Instance.AC_AutoRangeComplete += AC_AutoRangeCompleted;
+            TimeTracesAcquisition Measurement = new TimeTracesAcquisition();
+            Measurement.startAC_Autorange(NumberOfChannel);
+            return;
+        }
+
+        AI_Channels.Instance.ChannelArray[NumberOfChannel - 1].AC_Range = Convert.ToDouble(RangeText, ImportantConstants.NumberFormat());
+    }
+
+    private void AC_AutoRangeCompleted(object sender, AC_AutoRangeEventArgs e)
+    {
+        ACRanges[e.NumberOfChannel - 1].SelectedIndexChanged -= AC_ComboBoxEventsForAutoRange[e.NumberOfChannel - 1];
+        string item = "";
+        if (e.isBipolar)
+            item += "±";
+        item += Convert.ToDouble(e.Range, ImportantConstants.NumberFormat());
+        item += "V";
+        ACRanges[e.NumberOfChannel - 1].SelectedIndex = ACRanges[e.NumberOfChannel - 1].Items.IndexOf(item);
+        ACRanges[e.NumberOfChannel - 1].SelectedIndexChanged += AC_ComboBoxEventsForAutoRange[e.NumberOfChannel - 1];
+        ACRanges[e.NumberOfChannel - 1].Enabled = true;
+
+    }
+
+    private void VoltagesArrived(object sender, MeasuredVoltages_DataArrivedEventArgs data)
+    {
+
+
+        SetText(SampleVoltage_textBox, data.Voltages[0].ToString("G6"));
+        SetText(Whole_Voltage_textBox, data.Voltages[1].ToString("G6"));
+        SetText(Rload_Voltage_TextBox, data.Voltages[2].ToString("G6"));
+        SetText(GateVoltageTextBox, data.Voltages[3].ToString("G6"));
+        double Rload=0;
+        try
+        {
+            Rload = Convert.ToDouble(GetComboBoxText(Rload_ComboBox), ImportantConstants.NumberFormat());
+        }
+        catch (Exception e)
+        {
+            MessageBox.Show(e.Message);
+            Rload = 0;
+        }
+        double SampleCurrent=0;
+
+        if (Rload != 0) SampleCurrent = data.Voltages[0] / Rload;
+        if (SampleCurrent != 0)
+            SetText(SampleCurrent_TextBox,SampleCurrent.ToString("G3"));
+
+    }
+
+    public void InvokeVoltageMeasurement(object sender, EventArgs e)
+    {
+        _VoltageMeasurementController.MeasureVoltageNormallyInThread();
+       // MessageBox.Show("");
+    }
+
+    private void visibilityChanged(object sender, EventArgs e)
+    {
+        if (this.Visible)
+        {
+            AllCustomEvents.Instance.VoltagesMeasurementDone += VoltagesArrived;
+         timer1.Start();
+        }
+        else
+        {
+            MessageBox.Show("");
+            AllCustomEvents.Instance.VoltagesMeasurementDone -= VoltagesArrived;
+            timer1.Stop();
+        }
+    }
+
+    private void RLoadTextChanged(object sender, EventArgs e)
+    {
+        ImportantConstants.Rload = Convert.ToDouble(((ComboBox)sender).Text, ImportantConstants.NumberFormat());
+        
+    }
+
+    private void SampleVoltage_textBox_TextChanged(object sender, EventArgs e)
+    {
+
+    }
+
+
+    
+    }
+}

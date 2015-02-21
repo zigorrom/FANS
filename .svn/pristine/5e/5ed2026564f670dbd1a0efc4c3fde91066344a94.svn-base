@@ -1,0 +1,20 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace FANS.classes
+{
+    class NoiseSpectraMeasurement
+    {
+        private VoltageMeasurement _VoltageMeasurement;
+        private TimeTracesAcquisition _TimeTracesAcquisition;
+
+        public NoiseSpectraMeasurement()
+        {
+            _VoltageMeasurement = new VoltageMeasurement();
+            _TimeTracesAcquisition = new TimeTracesAcquisition();
+        }
+        
+    }
+}

@@ -1,0 +1,44 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using ZedGraph;
+using FANS.interfaces;
+namespace FANS.classes
+{
+    class ListOfRawADCDataString:ListDataString
+    {
+
+        private double _LastTimeStamp;
+        public ListOfRawADCDataString()
+        {
+            this.FileHeader="Time\tADC1\tADC2\tADC3\tADC4";
+            this.FileSubheader="s\tV\tV\tV\tV";
+            this.DataString=new RawADCDataString();
+            ListOfData = new List<MeasurDataInterface>();
+        }
+        public void ParseFromADC_DataArrivedEventArgs(ADC_DataArrivedEventArgs data,double timeshift = 0)
+        {
+            ListOfData.Clear();
+            int AcqRate = AI_Channels.Instance.ACQ_Rate;
+            double TimeUnit = (double)1 / AcqRate;
+            int CountOfDataPoints = data.data[0].Count;
+            RawADCDataString DataStr,DataStrCopy;
+            DataStrCopy = new RawADCDataString();
+            for (int i = 0; i < CountOfDataPoints; i++)
+            {
+                DataStr = new RawADCDataString(data.data[0][i].X+timeshift, data.data[0][i].Y, data.data[1][i].Y, data.data[2][i].Y, data.data[3][i].Y);
+                this.ListOfData.Add(DataStr);
+                DataStrCopy = DataStr;
+            }
+            this._LastTimeStamp = DataStrCopy.Time + TimeUnit;
+            
+            this.writeToFile();   
+        }
+        public double getLastTimeStamp()
+        {
+            return this._LastTimeStamp;
+        }
+
+    }
+}

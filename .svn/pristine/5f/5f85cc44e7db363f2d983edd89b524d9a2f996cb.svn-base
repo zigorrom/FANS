@@ -1,0 +1,11 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace FANS.classes
+{
+    class AI_Channel
+    {
+    }
+}

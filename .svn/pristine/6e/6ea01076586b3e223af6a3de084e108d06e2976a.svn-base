@@ -1,0 +1,81 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace FANS.classes
+{
+    class AI_Channels
+    {
+        private static AI_Channels _instance;
+        public static AI_Channels Instance
+        {
+            get
+            {
+                if (_instance == null) _instance = new AI_Channels();
+                return _instance;
+
+            }
+        }
+
+        private Agilent_AnalogInput_LowLevel _AI;
+
+        private AI_Channel[] _Channels;
+        public AI_Channel[] ChannelArray
+        {
+            set
+            {
+
+            }
+            get
+            {
+                return _Channels;
+            }
+        }
+
+        private AI_Channels()
+        {
+            this._Channels = new AI_Channel[4] { new AI_Channel(1), new AI_Channel(2), new AI_Channel(3), new AI_Channel(4) };
+            _AI = new Agilent_AnalogInput_LowLevel();
+        }
+
+        public int ACQ_Rate;
+        public void Read_AI_Channel_Status()
+        {
+            
+            string devicePolarity = _AI.tryToQueryString("ROUT:CHAN:POL? (@101:104)");
+            string[] ChannelPolarities = devicePolarity.Split(',');
+            string deviceRanges = _AI.tryToQueryString("ROUT:CHAN:RANG? (@101:104)");
+            string[] ChannelRanges = deviceRanges.Split(',');
+            string DeviceEnabled = _AI.tryToQueryString("ROUT:ENAB? (@101:104)");
+            string[] ChannelEnabled = DeviceEnabled.Split(',');
+            
+
+            for (int i = 0; i < _Channels.Length; i++)
+            {
+                if (ChannelPolarities[i] == "BIP") _Channels[i].SetACPolarity(true);
+                 else if (ChannelPolarities[i] == "UNIP") _Channels[i].SetACPolarity(false);
+                  else throw new Exception("The polarity returned unknown");
+                _Channels[i].setACRange(Convert.ToDouble(ChannelRanges[i],ImportantConstants.NumberFormat()));
+                
+                if (ChannelEnabled[i] == "1") _Channels[i].SetEnabled(true);
+                else if (ChannelEnabled[i] == "0") _Channels[i].SetEnabled(false);
+                  else throw new Exception("The enabled returned unknown");
+                //Channels[i].AcqRate = ACQ_Rate;
+             }
+        }
+
+        public int ReadAcquisitionRate()
+        {
+            string AcquisitionRate = _AI.tryToQueryString("ACQ:SRAT?");
+            int ACQ = Convert.ToInt32(AcquisitionRate);
+            this.ACQ_Rate = ACQ;
+            return ACQ;
+        }
+        public void DisableAllChannelsForContiniousDataAcquisition()
+        {
+            _AI.tryToWriteString("ROUT:ENAB OFF,(@101:104)");
+        }
+
+    }
+}

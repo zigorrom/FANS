@@ -1,0 +1,149 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.IO;
+using System.Windows.Forms;
+using FANS.interfaces;
+namespace FANS.classes
+{
+    class FileManager
+    {
+        
+        private ListOfRawADCDataString _ListOfRawADCDataStrings;
+        private ListOfTimeTraceMeasurDataString _ListOfTimeTraceMeasurDataString;
+        private double _Timeshift_Raw_ADC,_timeLimit;
+        private static FileManager _instance;
+        public static FileManager Instance
+        {
+            get
+            {
+                if (_instance == null) _instance = new FileManager();
+                return _instance;
+            }
+        }
+
+        private string _workfolder;
+
+        public string workfolder
+        {
+            get { return this._workfolder; }
+            set { this._workfolder = value; this.readFolder(); }
+        }
+        private FileManager()
+        {
+            this.readFolder();
+            
+            _ListOfTimeTraceMeasurDataString = new ListOfTimeTraceMeasurDataString();
+            _ListOfTimeTraceMeasurDataString.FileName = "MeasurDataTimeTrace.dat";
+        }
+        private bool readFolder()
+        {
+            if (!Directory.Exists(this._workfolder))
+            {
+                _workfolder = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            }
+            else
+            {
+                Directory.SetCurrentDirectory(_workfolder);
+                return true;
+            }
+            return false;
+        }
+        public bool FileExists(string filename)
+        {
+            return File.Exists(filename);
+        }
+        public string suggestFileNameWithIncrement(string filename)
+        {
+            int searchResult = filename.LastIndexOf('.');
+            if (searchResult == -1) filename += ".dat";
+            searchResult = filename.IndexOf('.');
+            string fileNameWithoutExtension = filename.Substring(0, searchResult);
+            string extension = filename.Substring(searchResult, filename.Length - searchResult);
+            int filenumber=0;
+            int digitsInNumber = 2;
+            searchResult = fileNameWithoutExtension.LastIndexOf('-');
+            if (searchResult != -1)
+            {
+                string LastSymbolsAfterDashInFilename = fileNameWithoutExtension.Substring(searchResult+1, fileNameWithoutExtension.Length-searchResult-1);
+                bool isLastPartANumber = Int32.TryParse(LastSymbolsAfterDashInFilename, out filenumber);
+                if (isLastPartANumber)
+                {
+                    filenumber++;
+                    digitsInNumber = fileNameWithoutExtension.Length - searchResult-1;
+                    fileNameWithoutExtension = fileNameWithoutExtension.Substring(0, searchResult);
+                    
+                }
+                
+            }
+
+
+            filename = fileNameWithoutExtension +"-"+filenumber.ToString("D"+digitsInNumber)+extension;
+            MessageBox.Show(filename);
+            return filename;
+        }
+        public void PrepareForRealTimeDataRecording(MeasurDataString MeasurData, double timelimit)
+        {
+            _ListOfTimeTraceMeasurDataString.readFromFile();
+            _ListOfTimeTraceMeasurDataString.ListOfData.Add(new TimeTraceMeasurDataString(MeasurData));
+            
+            this.PrepareForRAW_RealTimeDataRecording(MeasurData.FileName, timelimit);
+            
+        }
+        public void PrepareForRAW_RealTimeDataRecording(string filename, double timeLimit=0)
+        {
+            this.readFolder();
+            this._ListOfRawADCDataStrings = new ListOfRawADCDataString();
+            _ListOfRawADCDataStrings.FileName = filename;
+            _ListOfRawADCDataStrings.OpenFileForWriting(true);
+            _Timeshift_Raw_ADC = 0;
+            _timeLimit = timeLimit;
+            
+            if (timeLimit != 0) AllCustomEvents.Instance.AI_Data_Arrived += RawDataArrivedWithTimeLimit;
+            else AllCustomEvents.Instance.AI_Data_Arrived += RawDataArrived;
+        }
+        private void RawDataArrived(object sender, ADC_DataArrivedEventArgs data)
+        {
+            _ListOfRawADCDataStrings.ParseFromADC_DataArrivedEventArgs(data, _Timeshift_Raw_ADC);
+            _Timeshift_Raw_ADC = _ListOfRawADCDataStrings.getLastTimeStamp();
+            
+
+        }
+        private void RawDataArrivedWithTimeLimit(object sender, ADC_DataArrivedEventArgs data)
+        {
+            _ListOfRawADCDataStrings.ParseFromADC_DataArrivedEventArgs(data, _Timeshift_Raw_ADC);
+            _Timeshift_Raw_ADC = _ListOfRawADCDataStrings.getLastTimeStamp();
+            if (_Timeshift_Raw_ADC > _timeLimit)
+            {
+                MessageBox.Show("File with " + Convert.ToString(_timeLimit, ImportantConstants.NumberFormat()) + "s limit recorded");
+                FinishWritingToFile();
+            }
+
+        }
+        public void FinishWritingToFile()
+        {
+            if (_ListOfRawADCDataStrings!=null)
+            _ListOfRawADCDataStrings.CloseFileForWriting();
+            if (_timeLimit != 0) AllCustomEvents.Instance.AI_Data_Arrived -= RawDataArrivedWithTimeLimit;
+            else AllCustomEvents.Instance.AI_Data_Arrived -= RawDataArrived;
+        }
+
+        
+        private EventHandler<EventArgs> _TimeTraceFileWritten;
+        public event EventHandler<EventArgs> TimeTraceFileWritten
+        {
+            add
+            {
+                if (_TimeTraceFileWritten == null || !_TimeTraceFileWritten.GetInvocationList().Contains(value))
+                {
+                    _TimeTraceFileWritten += value;
+                }
+            }
+            remove
+            {
+                _TimeTraceFileWritten -= value;
+            }
+        }
+    }
+}

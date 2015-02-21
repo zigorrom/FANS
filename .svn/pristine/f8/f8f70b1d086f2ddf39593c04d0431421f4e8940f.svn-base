@@ -1,0 +1,55 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using ZedGraph;
+namespace FANS.classes
+{
+    
+    class Agilent_AnalogInput_LowLevel
+    {
+        
+      
+
+        public Agilent_AnalogInput_LowLevel()
+        {
+            if (!Agilent_USB_DAQ.Instance.isAlive())
+                Agilent_USB_DAQ.Instance.Open();
+
+            if (!Agilent_USB_DAQ.Instance.isAlive()) throw new Exception("Device Not Connected"); 
+                                    
+        }
+        
+        
+
+        public void tryToWriteString(string WhatToWrite)
+        {
+            try { Agilent_USB_DAQ.Instance.WriteString(WhatToWrite); }
+            catch (Exception e) { MessageBox.Show(e.Message); }
+        }
+        public string tryToQueryString(string WhatToWrite)
+        {
+            try { string result= Agilent_USB_DAQ.Instance.QueryString(WhatToWrite);
+            return result.Substring(0, result.Length - 1);
+            }
+            catch (Exception e) { MessageBox.Show(e.Message); return null; }
+        }
+
+    
+
+
+        public void MeasureVoltagesFast()
+        {
+            //do_something
+            AllCustomEvents.Instance.OnAllVoltagesMeasured(this, new MeasuredVoltages_DataArrivedEventArgs(1, 2, 3, 4));
+        }
+        public void MeasureVoltagesPrecise()
+        {
+            //do something
+            AllCustomEvents.Instance.OnAllVoltagesMeasured(this,new MeasuredVoltages_DataArrivedEventArgs(1, 2, 3, 4, true));
+        }
+        
+
+    }
+}

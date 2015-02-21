@@ -1,0 +1,65 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace FANS.classes
+{
+    class VoltageMeasurement
+    {
+        private Agilent_AnalogInput_LowLevel _AI;
+        public VoltageMeasurement()
+        {
+            _AI = new Agilent_AnalogInput_LowLevel();
+        }
+
+        public void MeasureVoltagePreciseInThread()
+        {
+            if (MeasurementThread.Instance.MeasurementRunning) { AllCustomEvents.Instance.MeasurementFinished += RecallPreciseVoltageMeasurement; }
+            MeasurementThread.Instance.StartThread(PerformVoltagePresiseMeasurement);
+        }
+
+        public void MeasureVoltageNormallyInThread()
+        {
+            if (!MeasurementThread.Instance.MeasurementRunning)  MeasurementThread.Instance.StartThread(PerformVoltageNormalMeasurement);
+        }
+
+        private void RecallPreciseVoltageMeasurement(object sender, EventArgs e)
+        {
+            AllCustomEvents.Instance.MeasurementFinished -= RecallPreciseVoltageMeasurement;
+            MeasureVoltagePreciseInThread();
+        }
+        private void PerformVoltagePresiseMeasurement()
+        {
+            int AveragingFactor = 10;
+            List<double[]> results = new List<double[]> { new double[AveragingFactor], new double[AveragingFactor], new double[AveragingFactor], new double[AveragingFactor] };
+            double[] result=new double[]{};
+            int prevAverage = AI_Channels.Instance.getDC_Average();
+            AI_Channels.Instance.setDC_Average(1000);
+            
+            for (int i = 0; i < AveragingFactor; i++)
+            {
+                if (!MeasurementThread.MeasurementInProgress) return;
+                result = AI_Channels.Instance.VoltageMeasurement101_104();
+                for (int j = 0; j < results.Count; j++)
+                    results[j][i] = result[j];
+                AllCustomEvents.Instance.OnMeasurementStatusChanged(this,new StatusEventArgs("Voltage measured "+(i+1)+"/"+AveragingFactor,0,AveragingFactor,i));
+            }
+            
+            AI_Channels.Instance.setDC_Average(prevAverage);
+            AllCustomEvents.Instance.OnVoltagesMeasurementDone(this, new MeasuredVoltages_DataArrivedEventArgs(result, true));
+        }
+
+        private void PerformVoltageNormalMeasurement()
+        {
+            double[] result = AI_Channels.Instance.VoltageMeasurement101_104();
+            AllCustomEvents.Instance.OnVoltagesMeasurementDone(this, new MeasuredVoltages_DataArrivedEventArgs(result, false));
+            
+}
+        
+
+
+        
+        
+    }
+}

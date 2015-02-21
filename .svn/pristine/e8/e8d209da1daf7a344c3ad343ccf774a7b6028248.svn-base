@@ -1,0 +1,200 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using ZedGraph;
+namespace FANS.classes
+{
+    struct AI_Channel
+    {
+        public byte ChannelNumber;
+        public double Range;
+        public bool Enabled;
+        public bool isBiPolar;//true when bipolar
+        public int AcqRate;
+    }
+
+    class TimeTracesAcquisition
+    {
+        private AI_Channel[] Channels;
+        private Agilent_AnalogInput_LowLevel _AI;
+        public TimeTracesAcquisition()
+        {
+            _AI = Agilent_AnalogInput_LowLevel.Instance;
+            Channels = new AI_Channel[4];
+            Read_AI_Channel_Status();
+        }
+
+        private void Read_AI_Channel_Status()
+        {
+            string AcquisitionRate = _AI.tryToQueryString("ACQ:SRAT?");
+            int ACQ_Rate = Convert.ToInt32(AcquisitionRate);
+            string devicePolarity = _AI.tryToQueryString("ROUT:CHAN:POL? (@101:104)");
+            string[] ChannelPolarities = devicePolarity.Split(',');
+            string deviceRanges = _AI.tryToQueryString("ROUT:CHAN:RANG? (@101:104)");
+            string[] ChannelRanges = deviceRanges.Split(',');
+            string DeviceEnabled = _AI.tryToQueryString("ROUT:ENAB? (@101:104)");
+            string[] ChannelEnabled = DeviceEnabled.Split(',');
+            for (int i = 0; i < Channels.Length; i++)
+            {
+                if (ChannelPolarities[i] == "BIP") Channels[i].isBiPolar = true;
+                else if (ChannelPolarities[i] == "UNIP") Channels[i].isBiPolar = false;
+                else throw new Exception("The polarity returned unknown");
+                switch (ChannelRanges[i])
+                {
+                    case "10":
+                        Channels[i].Range = 10;
+                        break;
+                    case "5":
+                        Channels[i].Range = 5;
+                        break;
+                    case "2.5":
+                        Channels[i].Range = 2.5;
+                        break;
+                    case "1.25":
+                        Channels[i].Range = 1.25;
+                        break;
+                    default:
+                        throw new Exception("Unknown Range");
+
+                }
+                if (ChannelEnabled[i] == "1") Channels[i].Enabled = true;
+                else if (ChannelEnabled[i] == "0") Channels[i].Enabled = false;
+                else throw new Exception("The enabled returned unknown");
+                Channels[i].ChannelNumber = (byte)(101 + i);
+                Channels[i].AcqRate = ACQ_Rate;
+            }
+
+        }
+        public void Set_AI_Channel_Parameters(AI_Channel[] Channels)
+        {
+            foreach (AI_Channel channel in Channels)
+            {
+                if (channel.Enabled) this.EnableChannelForContiniousDataAcquisition((int)channel.ChannelNumber);
+                double Range=channel.Range;
+                if (channel.Range == 0) Range = this.autorange(channel.ChannelNumber);
+                this.SetChannelRange(Range,channel.ChannelNumber);
+                this.SetChannelPolarity(channel.isBiPolar, channel.ChannelNumber);
+            }
+        }
+        private double autorange(byte ChannelNumber)
+        {
+            return 0;
+        }
+
+        private void SetChannelRange(double Range, byte ChannelNumber)
+        {
+            _AI.tryToWriteString("ROUT:CHAN:RANG " + Convert.ToString(Range, ImportantConstants.NumberFormat()) + ", (@" + ChannelNumber + ")");
+        }
+        private void SetChannelPolarity(bool isBipolar, byte ChannelNumber)
+        {
+            if(isBipolar)
+                 _AI.tryToWriteString("ROUT:CHAN:POL BIP, (@" + ChannelNumber + ")");
+            else
+                _AI.tryToWriteString("ROUT:CHAN:POL UNIP, (@" + ChannelNumber + ")");
+        }
+        public void EnableChannelForContiniousDataAcquisition(int ChannelNumber)
+        {
+            _AI.tryToWriteString("ROUT:ENAB ON,(@" + ChannelNumber + ")");
+        }
+        public void DisableChannelForContiniousDataAcquisition(int ChannelNumber)
+        {
+            _AI.tryToWriteString("ROUT:ENAB OFF,(@" + ChannelNumber + ")");
+        }
+        public void DisableAllChannelsForContiniousDataAcquisition()
+        {
+            _AI.tryToWriteString("ROUT:ENAB OFF,(@101:104)");
+        }
+        public void SetSamplingRate(int SamplingRate)
+        {
+            _AI.tryToWriteString("ACQ:SRAT " + SamplingRate + "");
+        }
+        public void SetPointsPerBlockValue(int PointsPerBlock)
+        {
+            _AI.tryToWriteString("WAV:POIN " + PointsPerBlock + "");
+        }
+        public void SetSingleShotPointsPerBlockValue(int PointsPerBlock)
+        {
+            _AI.tryToWriteString("ACQ:POIN " + PointsPerBlock + "");
+            this.Read_AI_Channel_Status();
+        }
+        public void StartAnalogAcqusition()
+        {
+            _AI.tryToWriteString("RUN");
+        }
+        public void AcquireSingleShot()
+        {
+            _AI.tryToWriteString("DIG");
+        }
+        public void ContiniousAcquisition()
+        {
+            this.Read_AI_Channel_Status();
+            this.StartAnalogAcqusition();
+            while (MeasurementThread.Instance.MeasurementRunning)
+            {
+                while (!Agilent_USB_DAQ.Instance.CheckAcquisitionStatus()) ;
+                string result = Agilent_USB_DAQ.Instance.QueryString("WAV:DATA?");
+                int[] resultInt = _AI.ParseDataStringToInt(result);
+                PointPairList[] ChannelData = _ParseIntArrayIntoChannelData(resultInt);
+                AllCustomEvents.Instance.OnAI_Data_Arrived(this, new ADC_DataArrivedEventArgs(ChannelData, Channels, result));
+            }
+            StopAnalogAcqusition();
+        }
+        public void MakeSingleShot()
+        {
+            this.Read_AI_Channel_Status();
+            this.AcquireSingleShot();
+
+            while (!Agilent_USB_DAQ.Instance.CheckSingleShotAcquisitionStatus()) ;
+            string result = Agilent_USB_DAQ.Instance.QueryString("WAV:DATA?");
+            int[] resultInt = _AI.ParseDataStringToInt(result);
+            PointPairList[] ChannelData = _ParseIntArrayIntoChannelData(resultInt);
+            AllCustomEvents.Instance.OnAI_Data_Arrived(this, new ADC_DataArrivedEventArgs(ChannelData, Channels));
+        }
+
+        private PointPairList[] _ParseIntArrayIntoChannelData(int[] IntArray)
+        {
+            PointPairList[] result = new PointPairList[4];
+            for (int i = 0; i < 4; i++) result[i] = new PointPairList();
+            List<AI_Channel> not_workingChannels = new List<AI_Channel>();
+            List<AI_Channel> workingChannels = new List<AI_Channel>();
+            double value, time;
+            foreach (AI_Channel ch in Channels)
+            {
+                if (ch.Enabled) workingChannels.Add(ch);
+                else not_workingChannels.Add(ch);
+            }
+            for (int i = 0; i < IntArray.Length; i += workingChannels.Count)
+            {
+
+                time = (double)i / workingChannels.Count / Channels[0].AcqRate;
+                int j = i;
+                foreach (AI_Channel workingChannel in workingChannels)
+                {
+
+                    if (workingChannel.isBiPolar)
+                        value = IntArray[j] * 2 * workingChannel.Range / 65536;
+                    else
+                        value = (IntArray[j] / 65536 + 0.5) * workingChannel.Range;
+                    result[workingChannel.ChannelNumber - 101].Add(time, value);
+                    j++;
+                }
+
+                foreach (AI_Channel not_workingChannel in not_workingChannels)
+                {
+                    result[not_workingChannel.ChannelNumber - 101].Add(time, 0);
+                }
+
+
+            }
+            return result;
+        }
+
+        public void StopAnalogAcqusition()
+        {
+            _AI.tryToWriteString("STOP");
+        }
+
+    }
+}
+

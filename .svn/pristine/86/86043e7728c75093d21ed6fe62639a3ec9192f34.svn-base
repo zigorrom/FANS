@@ -1,0 +1,24 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace FANS.classes
+{
+    class StatusEventArgs : EventArgs
+    {
+            public string Status;
+            public int Min,Max,Current;
+            public StatusEventArgs(string status,int min,int max,int current)
+                : base()
+            {
+                Status=status;
+                Min=min;
+                Max=max;
+                Current=current;
+            }
+
+
+        }
+    }
+

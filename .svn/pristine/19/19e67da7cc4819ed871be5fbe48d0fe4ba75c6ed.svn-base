@@ -1,0 +1,80 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using ZedGraph;
+namespace FANS.classes
+{
+   
+
+    class TimeTracesAcquisition
+    {
+
+        private AI_Channels _Channels;
+        private DataStringConverter _DataConverter;
+        public TimeTracesAcquisition()
+        {
+            _Channels = AI_Channels.Instance;
+            _Channels.Read_AI_Channel_Status();
+            _DataConverter = new DataStringConverter();
+        }
+
+       
+        
+        public void ContiniousAcquisition()
+        {
+            _Channels.Read_AI_Channel_Status();
+            int ACQ_Rate = _Channels.ReadAcquisitionRate();
+            _Channels.StartAnalogAcqusition();
+            while (MeasurementThread.Instance.MeasurementRunning)
+            {
+                while (!_Channels.CheckAcquisitionStatus()) ;
+                string result = AI_Channels.Instance.AcquireStringWithData();
+                int[] resultInt = _DataConverter.ParseDataStringToInt(result);
+                PointPairList[] ChannelData = _DataConverter.ParseIntArrayIntoChannelData(resultInt, ACQ_Rate);
+                AllCustomEvents.Instance.OnAI_Data_Arrived(this, new ADC_DataArrivedEventArgs(ChannelData, result));
+            }
+            _Channels.StopAnalogAcqusition();
+        }
+        public void MakeSingleShot()
+        {
+            _Channels.Read_AI_Channel_Status();
+            int ACQ_Rate = _Channels.ReadAcquisitionRate();
+            _Channels.AcquireSingleShot();
+
+            while (!_Channels.CheckSingleShotAcquisitionStatus()) ;
+            string result = AI_Channels.Instance.AcquireStringWithData();
+            int[] resultInt = _DataConverter.ParseDataStringToInt(result);
+            PointPairList[] ChannelData = _DataConverter.ParseIntArrayIntoChannelData(resultInt, ACQ_Rate);
+            AllCustomEvents.Instance.OnAI_Data_Arrived(this, new ADC_DataArrivedEventArgs(ChannelData));
+        }
+
+        public virtual void OnAI_Data_Arrived(object Sender, ADC_DataArrivedEventArgs e)
+        {
+            EventHandler<ADC_DataArrivedEventArgs> handler = _AI_Data_Arrived;
+            if (handler != null)
+            {
+                handler(Sender, e);
+            }
+        }
+        private EventHandler<ADC_DataArrivedEventArgs> _AI_Data_Arrived;
+        public event EventHandler<ADC_DataArrivedEventArgs> AI_Data_Arrived
+        {
+            add
+            {
+                if (_AI_Data_Arrived == null || !_AI_Data_Arrived.GetInvocationList().Contains(value))
+                {
+                    _AI_Data_Arrived += value;
+                }
+            }
+            remove
+            {
+                _AI_Data_Arrived -= value;
+            }
+        }
+
+        
+
+    }
+}
+

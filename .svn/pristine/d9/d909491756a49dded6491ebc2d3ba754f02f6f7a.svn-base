@@ -1,0 +1,28 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using FANS.interfaces;
+using System.IO;
+namespace FANS.classes
+{
+    class ListOfMeasurDataString : ListDataString
+    {
+        protected new string FileHeader = "U\\-(sample)\tCurrent\tR\\-(Eq)\tFilename\tR\\-(load)\tU\\-(Whole)\tU\\-(0sample)\tU\\-(0Whole)\tR\\-(0sample)\tR\\-(Esample)\tTemperature\\-(0)\tTemperature\\-(E)\tk\\-(ampl)\tN\\-(aver)\tV\\-(g)";
+        protected new string FileSubheader = "V\tA\t\\g(W)\t\t\\g(W)\tV\tV\tV\t\\g(W)\t\\g(W)\tK\tK\t\t\tV";
+        protected new string FileName = "MeasurData.dat";
+        public ListOfMeasurDataString()
+        {
+            this.DataString = new MeasurDataString();
+            this.ListOfData = new List<MeasurDataInterface>();
+            //this.readFromFile();
+            
+        }
+        public void Add(MeasurDataString A)
+        {
+            this.ListOfData.Add(A);
+        }
+
+        
+    }
+}

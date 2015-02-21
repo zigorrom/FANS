@@ -1,0 +1,589 @@
+﻿namespace FANS
+{
+    partial class VoltagesControl
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            this.components = new System.ComponentModel.Container();
+            this.Voltage_tabs = new System.Windows.Forms.TabControl();
+            this.voltage_values = new System.Windows.Forms.TabPage();
+            this.GateVoltageTextBox = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.SampleCurrent_TextBox = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.Rload_ComboBox = new System.Windows.Forms.ComboBox();
+            this.Rload_Voltage_TextBox = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.Whole_Voltage_textBox = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.SampleVoltage_textBox = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.Voltage_DC_Ranges = new System.Windows.Forms.TabPage();
+            this.Averaging_comboBox = new System.Windows.Forms.ComboBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.Channel_4_DC_Range_combobox = new System.Windows.Forms.ComboBox();
+            this.Channel_3_DC_Range_combobox = new System.Windows.Forms.ComboBox();
+            this.Channel_2_DC_Range_combobox = new System.Windows.Forms.ComboBox();
+            this.Channel_1_DC_Range_combobox = new System.Windows.Forms.ComboBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.Voltage_ACQ_ranges = new System.Windows.Forms.TabPage();
+            this.Channel_4_AC_Range_combobox = new System.Windows.Forms.ComboBox();
+            this.Channel_3_AC_Range_combobox = new System.Windows.Forms.ComboBox();
+            this.Channel_2_AC_Range_combobox = new System.Windows.Forms.ComboBox();
+            this.Channel_1_AC_Range_combobox = new System.Windows.Forms.ComboBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.Voltage_tabs.SuspendLayout();
+            this.voltage_values.SuspendLayout();
+            this.Voltage_DC_Ranges.SuspendLayout();
+            this.Voltage_ACQ_ranges.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // Voltage_tabs
+            // 
+            this.Voltage_tabs.Controls.Add(this.voltage_values);
+            this.Voltage_tabs.Controls.Add(this.Voltage_DC_Ranges);
+            this.Voltage_tabs.Controls.Add(this.Voltage_ACQ_ranges);
+            this.Voltage_tabs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.Voltage_tabs.Location = new System.Drawing.Point(0, 0);
+            this.Voltage_tabs.Name = "Voltage_tabs";
+            this.Voltage_tabs.SelectedIndex = 0;
+            this.Voltage_tabs.Size = new System.Drawing.Size(183, 417);
+            this.Voltage_tabs.TabIndex = 0;
+            // 
+            // voltage_values
+            // 
+            this.voltage_values.Controls.Add(this.GateVoltageTextBox);
+            this.voltage_values.Controls.Add(this.label11);
+            this.voltage_values.Controls.Add(this.SampleCurrent_TextBox);
+            this.voltage_values.Controls.Add(this.label5);
+            this.voltage_values.Controls.Add(this.label4);
+            this.voltage_values.Controls.Add(this.Rload_ComboBox);
+            this.voltage_values.Controls.Add(this.Rload_Voltage_TextBox);
+            this.voltage_values.Controls.Add(this.label3);
+            this.voltage_values.Controls.Add(this.Whole_Voltage_textBox);
+            this.voltage_values.Controls.Add(this.label2);
+            this.voltage_values.Controls.Add(this.SampleVoltage_textBox);
+            this.voltage_values.Controls.Add(this.label1);
+            this.voltage_values.Location = new System.Drawing.Point(4, 22);
+            this.voltage_values.Name = "voltage_values";
+            this.voltage_values.Padding = new System.Windows.Forms.Padding(3);
+            this.voltage_values.Size = new System.Drawing.Size(175, 391);
+            this.voltage_values.TabIndex = 0;
+            this.voltage_values.Text = "Values";
+            this.voltage_values.UseVisualStyleBackColor = true;
+            // 
+            // GateVoltageTextBox
+            // 
+            this.GateVoltageTextBox.Location = new System.Drawing.Point(98, 82);
+            this.GateVoltageTextBox.Name = "GateVoltageTextBox";
+            this.GateVoltageTextBox.ReadOnly = true;
+            this.GateVoltageTextBox.Size = new System.Drawing.Size(69, 20);
+            this.GateVoltageTextBox.TabIndex = 11;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(5, 85);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(85, 13);
+            this.label11.TabIndex = 10;
+            this.label11.Text = "Gate Voltage(V):";
+            // 
+            // SampleCurrent_TextBox
+            // 
+            this.SampleCurrent_TextBox.Location = new System.Drawing.Point(98, 161);
+            this.SampleCurrent_TextBox.Name = "SampleCurrent_TextBox";
+            this.SampleCurrent_TextBox.ReadOnly = true;
+            this.SampleCurrent_TextBox.Size = new System.Drawing.Size(69, 20);
+            this.SampleCurrent_TextBox.TabIndex = 9;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(4, 164);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(82, 13);
+            this.label5.TabIndex = 8;
+            this.label5.Text = "Sample Current:";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(6, 128);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(69, 13);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "Rload (Ohm):";
+            // 
+            // Rload_ComboBox
+            // 
+            this.Rload_ComboBox.FormattingEnabled = true;
+            this.Rload_ComboBox.Items.AddRange(new object[] {
+            "50",
+            "100",
+            "500",
+            "1000",
+            "5000",
+            "10000",
+            "50000",
+            "100000",
+            "500000",
+            "1000000"});
+            this.Rload_ComboBox.Location = new System.Drawing.Point(98, 125);
+            this.Rload_ComboBox.Name = "Rload_ComboBox";
+            this.Rload_ComboBox.Size = new System.Drawing.Size(69, 21);
+            this.Rload_ComboBox.TabIndex = 6;
+            this.Rload_ComboBox.TextChanged += new System.EventHandler(this.RLoadTextChanged);
+            this.Rload_ComboBox.VisibleChanged += new System.EventHandler(this.visibilityChanged);
+            // 
+            // Rload_Voltage_TextBox
+            // 
+            this.Rload_Voltage_TextBox.Location = new System.Drawing.Point(98, 58);
+            this.Rload_Voltage_TextBox.Name = "Rload_Voltage_TextBox";
+            this.Rload_Voltage_TextBox.ReadOnly = true;
+            this.Rload_Voltage_TextBox.Size = new System.Drawing.Size(69, 20);
+            this.Rload_Voltage_TextBox.TabIndex = 5;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(4, 61);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(90, 13);
+            this.label3.TabIndex = 4;
+            this.label3.Text = "Rload Voltage(V):";
+            // 
+            // Whole_Voltage_textBox
+            // 
+            this.Whole_Voltage_textBox.Location = new System.Drawing.Point(98, 35);
+            this.Whole_Voltage_textBox.Name = "Whole_Voltage_textBox";
+            this.Whole_Voltage_textBox.ReadOnly = true;
+            this.Whole_Voltage_textBox.Size = new System.Drawing.Size(69, 20);
+            this.Whole_Voltage_textBox.TabIndex = 3;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(2, 38);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(93, 13);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "Whole Voltage(V):";
+            // 
+            // SampleVoltage_textBox
+            // 
+            this.SampleVoltage_textBox.Location = new System.Drawing.Point(98, 11);
+            this.SampleVoltage_textBox.Name = "SampleVoltage_textBox";
+            this.SampleVoltage_textBox.ReadOnly = true;
+            this.SampleVoltage_textBox.Size = new System.Drawing.Size(69, 20);
+            this.SampleVoltage_textBox.TabIndex = 1;
+            this.SampleVoltage_textBox.TextChanged += new System.EventHandler(this.SampleVoltage_textBox_TextChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(2, 14);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(97, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Sample Voltage(V):";
+            // 
+            // Voltage_DC_Ranges
+            // 
+            this.Voltage_DC_Ranges.Controls.Add(this.Averaging_comboBox);
+            this.Voltage_DC_Ranges.Controls.Add(this.label10);
+            this.Voltage_DC_Ranges.Controls.Add(this.Channel_4_DC_Range_combobox);
+            this.Voltage_DC_Ranges.Controls.Add(this.Channel_3_DC_Range_combobox);
+            this.Voltage_DC_Ranges.Controls.Add(this.Channel_2_DC_Range_combobox);
+            this.Voltage_DC_Ranges.Controls.Add(this.Channel_1_DC_Range_combobox);
+            this.Voltage_DC_Ranges.Controls.Add(this.label9);
+            this.Voltage_DC_Ranges.Controls.Add(this.label8);
+            this.Voltage_DC_Ranges.Controls.Add(this.label7);
+            this.Voltage_DC_Ranges.Controls.Add(this.label6);
+            this.Voltage_DC_Ranges.Location = new System.Drawing.Point(4, 22);
+            this.Voltage_DC_Ranges.Name = "Voltage_DC_Ranges";
+            this.Voltage_DC_Ranges.Padding = new System.Windows.Forms.Padding(3);
+            this.Voltage_DC_Ranges.Size = new System.Drawing.Size(175, 391);
+            this.Voltage_DC_Ranges.TabIndex = 1;
+            this.Voltage_DC_Ranges.Text = "DC Ranges";
+            this.Voltage_DC_Ranges.UseVisualStyleBackColor = true;
+            // 
+            // Averaging_comboBox
+            // 
+            this.Averaging_comboBox.FormattingEnabled = true;
+            this.Averaging_comboBox.Items.AddRange(new object[] {
+            "1",
+            "5",
+            "10",
+            "20",
+            "50",
+            "100",
+            "200",
+            "500",
+            "1000"});
+            this.Averaging_comboBox.Location = new System.Drawing.Point(81, 142);
+            this.Averaging_comboBox.Name = "Averaging_comboBox";
+            this.Averaging_comboBox.Size = new System.Drawing.Size(77, 21);
+            this.Averaging_comboBox.TabIndex = 9;
+            this.Averaging_comboBox.Text = "1";
+            this.Averaging_comboBox.SelectedIndexChanged += new System.EventHandler(this.Averaging_comboBox_SelectedIndexChanged);
+            this.Averaging_comboBox.TextChanged += new System.EventHandler(this.Averaging_comboBox_SelectedIndexChanged);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(14, 145);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(55, 13);
+            this.label10.TabIndex = 8;
+            this.label10.Text = "Averaging";
+            // 
+            // Channel_4_DC_Range_combobox
+            // 
+            this.Channel_4_DC_Range_combobox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.Channel_4_DC_Range_combobox.FormattingEnabled = true;
+            this.Channel_4_DC_Range_combobox.Items.AddRange(new object[] {
+            "±1.25V",
+            "±2.5V",
+            "±5V",
+            "±10V",
+            "1.25V",
+            "2.5V",
+            "5V",
+            "10V",
+            "AUTO",
+            "±AUTO"});
+            this.Channel_4_DC_Range_combobox.Location = new System.Drawing.Point(81, 108);
+            this.Channel_4_DC_Range_combobox.Name = "Channel_4_DC_Range_combobox";
+            this.Channel_4_DC_Range_combobox.Size = new System.Drawing.Size(77, 21);
+            this.Channel_4_DC_Range_combobox.TabIndex = 7;
+            this.Channel_4_DC_Range_combobox.SelectedIndexChanged += new System.EventHandler(this.Channel_4_DC_Range_combobox_SelectedIndexChanged);
+            // 
+            // Channel_3_DC_Range_combobox
+            // 
+            this.Channel_3_DC_Range_combobox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.Channel_3_DC_Range_combobox.FormattingEnabled = true;
+            this.Channel_3_DC_Range_combobox.Items.AddRange(new object[] {
+            "±1.25V",
+            "±2.5V",
+            "±5V",
+            "±10V",
+            "1.25V",
+            "2.5V",
+            "5V",
+            "10V",
+            "AUTO",
+            "±AUTO"});
+            this.Channel_3_DC_Range_combobox.Location = new System.Drawing.Point(81, 78);
+            this.Channel_3_DC_Range_combobox.Name = "Channel_3_DC_Range_combobox";
+            this.Channel_3_DC_Range_combobox.Size = new System.Drawing.Size(77, 21);
+            this.Channel_3_DC_Range_combobox.TabIndex = 6;
+            this.Channel_3_DC_Range_combobox.SelectedIndexChanged += new System.EventHandler(this.Channel_3_DC_Range_combobox_SelectedIndexChanged);
+            // 
+            // Channel_2_DC_Range_combobox
+            // 
+            this.Channel_2_DC_Range_combobox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.Channel_2_DC_Range_combobox.FormattingEnabled = true;
+            this.Channel_2_DC_Range_combobox.Items.AddRange(new object[] {
+            "±1.25V",
+            "±2.5V",
+            "±5V",
+            "±10V",
+            "1.25V",
+            "2.5V",
+            "5V",
+            "10V",
+            "AUTO",
+            "±AUTO"});
+            this.Channel_2_DC_Range_combobox.Location = new System.Drawing.Point(81, 48);
+            this.Channel_2_DC_Range_combobox.Name = "Channel_2_DC_Range_combobox";
+            this.Channel_2_DC_Range_combobox.Size = new System.Drawing.Size(77, 21);
+            this.Channel_2_DC_Range_combobox.TabIndex = 5;
+            this.Channel_2_DC_Range_combobox.SelectedIndexChanged += new System.EventHandler(this.Channel_2_DC_Range_combobox_SelectedIndexChanged);
+            // 
+            // Channel_1_DC_Range_combobox
+            // 
+            this.Channel_1_DC_Range_combobox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.Channel_1_DC_Range_combobox.FormattingEnabled = true;
+            this.Channel_1_DC_Range_combobox.Items.AddRange(new object[] {
+            "±1.25V",
+            "±2.5V",
+            "±5V",
+            "±10V",
+            "1.25V",
+            "2.5V",
+            "5V",
+            "10V",
+            "AUTO",
+            "±AUTO"});
+            this.Channel_1_DC_Range_combobox.Location = new System.Drawing.Point(81, 18);
+            this.Channel_1_DC_Range_combobox.Name = "Channel_1_DC_Range_combobox";
+            this.Channel_1_DC_Range_combobox.Size = new System.Drawing.Size(77, 21);
+            this.Channel_1_DC_Range_combobox.TabIndex = 4;
+            this.Channel_1_DC_Range_combobox.SelectedIndexChanged += new System.EventHandler(this.Channel_1_DC_Range_combobox_SelectedIndexChanged);
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(14, 111);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(55, 13);
+            this.label9.TabIndex = 3;
+            this.label9.Text = "Channel 4";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(14, 81);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(55, 13);
+            this.label8.TabIndex = 2;
+            this.label8.Text = "Channel 3";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(14, 51);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(55, 13);
+            this.label7.TabIndex = 1;
+            this.label7.Text = "Channel 2";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(14, 21);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(55, 13);
+            this.label6.TabIndex = 0;
+            this.label6.Text = "Channel 1";
+            // 
+            // Voltage_ACQ_ranges
+            // 
+            this.Voltage_ACQ_ranges.Controls.Add(this.Channel_4_AC_Range_combobox);
+            this.Voltage_ACQ_ranges.Controls.Add(this.Channel_3_AC_Range_combobox);
+            this.Voltage_ACQ_ranges.Controls.Add(this.Channel_2_AC_Range_combobox);
+            this.Voltage_ACQ_ranges.Controls.Add(this.Channel_1_AC_Range_combobox);
+            this.Voltage_ACQ_ranges.Controls.Add(this.label12);
+            this.Voltage_ACQ_ranges.Controls.Add(this.label13);
+            this.Voltage_ACQ_ranges.Controls.Add(this.label14);
+            this.Voltage_ACQ_ranges.Controls.Add(this.label15);
+            this.Voltage_ACQ_ranges.Location = new System.Drawing.Point(4, 22);
+            this.Voltage_ACQ_ranges.Name = "Voltage_ACQ_ranges";
+            this.Voltage_ACQ_ranges.Size = new System.Drawing.Size(175, 391);
+            this.Voltage_ACQ_ranges.TabIndex = 2;
+            this.Voltage_ACQ_ranges.Text = "AC_Ranges";
+            this.Voltage_ACQ_ranges.UseVisualStyleBackColor = true;
+            // 
+            // Channel_4_AC_Range_combobox
+            // 
+            this.Channel_4_AC_Range_combobox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.Channel_4_AC_Range_combobox.FormattingEnabled = true;
+            this.Channel_4_AC_Range_combobox.Items.AddRange(new object[] {
+            "±1.25V",
+            "±2.5V",
+            "±5V",
+            "±10V",
+            "1.25V",
+            "2.5V",
+            "5V",
+            "10V",
+            "AUTO"});
+            this.Channel_4_AC_Range_combobox.Location = new System.Drawing.Point(81, 108);
+            this.Channel_4_AC_Range_combobox.Name = "Channel_4_AC_Range_combobox";
+            this.Channel_4_AC_Range_combobox.Size = new System.Drawing.Size(77, 21);
+            this.Channel_4_AC_Range_combobox.TabIndex = 15;
+            this.Channel_4_AC_Range_combobox.SelectedIndexChanged += new System.EventHandler(this.Channel_4_AC_Range_combobox_SelectedIndexChanged);
+            // 
+            // Channel_3_AC_Range_combobox
+            // 
+            this.Channel_3_AC_Range_combobox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.Channel_3_AC_Range_combobox.FormattingEnabled = true;
+            this.Channel_3_AC_Range_combobox.Items.AddRange(new object[] {
+            "±1.25V",
+            "±2.5V",
+            "±5V",
+            "±10V",
+            "1.25V",
+            "2.5V",
+            "5V",
+            "10V",
+            "AUTO"});
+            this.Channel_3_AC_Range_combobox.Location = new System.Drawing.Point(81, 78);
+            this.Channel_3_AC_Range_combobox.Name = "Channel_3_AC_Range_combobox";
+            this.Channel_3_AC_Range_combobox.Size = new System.Drawing.Size(77, 21);
+            this.Channel_3_AC_Range_combobox.TabIndex = 14;
+            this.Channel_3_AC_Range_combobox.SelectedIndexChanged += new System.EventHandler(this.Channel_3_AC_Range_combobox_SelectedIndexChanged);
+            // 
+            // Channel_2_AC_Range_combobox
+            // 
+            this.Channel_2_AC_Range_combobox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.Channel_2_AC_Range_combobox.FormattingEnabled = true;
+            this.Channel_2_AC_Range_combobox.Items.AddRange(new object[] {
+            "±1.25V",
+            "±2.5V",
+            "±5V",
+            "±10V",
+            "1.25V",
+            "2.5V",
+            "5V",
+            "10V",
+            "AUTO"});
+            this.Channel_2_AC_Range_combobox.Location = new System.Drawing.Point(81, 48);
+            this.Channel_2_AC_Range_combobox.Name = "Channel_2_AC_Range_combobox";
+            this.Channel_2_AC_Range_combobox.Size = new System.Drawing.Size(77, 21);
+            this.Channel_2_AC_Range_combobox.TabIndex = 13;
+            this.Channel_2_AC_Range_combobox.SelectedIndexChanged += new System.EventHandler(this.Channel_2_AC_Range_combobox_SelectedIndexChanged);
+            // 
+            // Channel_1_AC_Range_combobox
+            // 
+            this.Channel_1_AC_Range_combobox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.Channel_1_AC_Range_combobox.Items.AddRange(new object[] {
+            "±1.25V",
+            "±2.5V",
+            "±5V",
+            "±10V",
+            "1.25V",
+            "2.5V",
+            "5V",
+            "10V",
+            "AUTO"});
+            this.Channel_1_AC_Range_combobox.Location = new System.Drawing.Point(81, 18);
+            this.Channel_1_AC_Range_combobox.Name = "Channel_1_AC_Range_combobox";
+            this.Channel_1_AC_Range_combobox.Size = new System.Drawing.Size(77, 21);
+            this.Channel_1_AC_Range_combobox.TabIndex = 12;
+            this.Channel_1_AC_Range_combobox.SelectedIndexChanged += new System.EventHandler(this.Channel_1_AC_Range_combobox_SelectedIndexChanged);
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(14, 111);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(55, 13);
+            this.label12.TabIndex = 11;
+            this.label12.Text = "Channel 4";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(14, 81);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(55, 13);
+            this.label13.TabIndex = 10;
+            this.label13.Text = "Channel 3";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(14, 51);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(55, 13);
+            this.label14.TabIndex = 9;
+            this.label14.Text = "Channel 2";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(14, 21);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(55, 13);
+            this.label15.TabIndex = 8;
+            this.label15.Text = "Channel 1";
+            // 
+            // timer1
+            // 
+            this.timer1.Interval = 1000;
+            this.timer1.Tick += new System.EventHandler(this.InvokeVoltageMeasurement);
+            // 
+            // VoltagesControl
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(183, 417);
+            this.Controls.Add(this.Voltage_tabs);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Name = "VoltagesControl";
+            this.Text = "VoltagesControl";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.VoltageControl_closing);
+            this.Voltage_tabs.ResumeLayout(false);
+            this.voltage_values.ResumeLayout(false);
+            this.voltage_values.PerformLayout();
+            this.Voltage_DC_Ranges.ResumeLayout(false);
+            this.Voltage_DC_Ranges.PerformLayout();
+            this.Voltage_ACQ_ranges.ResumeLayout(false);
+            this.Voltage_ACQ_ranges.PerformLayout();
+            this.ResumeLayout(false);
+
+        }
+
+        #endregion
+
+        private System.Windows.Forms.TabControl Voltage_tabs;
+        private System.Windows.Forms.TabPage voltage_values;
+        private System.Windows.Forms.TextBox SampleCurrent_TextBox;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ComboBox Rload_ComboBox;
+        private System.Windows.Forms.TextBox Rload_Voltage_TextBox;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox Whole_Voltage_textBox;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox SampleVoltage_textBox;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TabPage Voltage_DC_Ranges;
+        private System.Windows.Forms.TabPage Voltage_ACQ_ranges;
+        private System.Windows.Forms.ComboBox Channel_1_DC_Range_combobox;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.ComboBox Channel_4_DC_Range_combobox;
+        private System.Windows.Forms.ComboBox Channel_3_DC_Range_combobox;
+        private System.Windows.Forms.ComboBox Channel_2_DC_Range_combobox;
+        private System.Windows.Forms.TextBox GateVoltageTextBox;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.ComboBox Averaging_comboBox;
+        private System.Windows.Forms.ComboBox Channel_4_AC_Range_combobox;
+        private System.Windows.Forms.ComboBox Channel_3_AC_Range_combobox;
+        private System.Windows.Forms.ComboBox Channel_2_AC_Range_combobox;
+        private System.Windows.Forms.ComboBox Channel_1_AC_Range_combobox;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Timer timer1;
+    }
+}

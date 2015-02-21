@@ -1,0 +1,299 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using FANS.classes;
+using System.Threading;
+namespace FANS
+{
+    public partial class Oscilloscope : Form
+    {
+        public Oscilloscope_Graph Oscilloscope_Controller;
+
+        TimeTracesAcquisition TimeTraceManager;
+        FileManager Files;
+        private double[] _Timescales, _Voltagescales;
+        private int[] _AcqusitionRates;
+        private CheckBox[] DAC_AC_Enabled_CheckBoxes;
+        public Thread Measurement;
+        public Oscilloscope()
+        {
+            InitializeComponent();
+            Oscilloscope_Controller = new Oscilloscope_Graph(Oscilloscope_zgc);
+            Oscilloscope_Controller.ShowChannel(1);
+            TimeTraceManager = new TimeTracesAcquisition();
+
+            DAC_AC_Enabled_CheckBoxes = new CheckBox[4] { channel_1_DAC_Enabled, channel_2_DAC_Enabled, channel_3_DAC_Enabled, channel_4_DAC_Enabled };
+
+            AllCustomEvents.Instance.AC_AutoRangeComplete += _initDAC;
+
+            _Timescales = new double[] { 1e-05, 2e-05, 3e-05, 5e-05, 7e-05, 1e-04, 2e-04, 3e-04, 5e-04, 7e-04, 1e-03, 2e-03, 3e-03, 5e-03, 7e-03, 1e-02, 2e-02, 3e-02, 5e-02, 7e-02, 1e-01, 2e-01, 3e-01, 5e-01, 7e-01, 1, 2,3,5,7 };
+            _Voltagescales = new double[] { 1e-04, 2e-04, 3e-04, 5e-04, 7e-04, 1e-03, 2e-03, 3e-03, 5e-03, 7e-03, 1e-02, 2e-02, 3e-02, 5e-02, 7e-02, 1e-01, 2e-01, 3e-01, 5e-01, 7e-01, 1, 2, 5 };
+            _AcqusitionRates = new int[] {3,4,5,10,20,30,40,50,60,70,80,90,100,200,400,500,700,1000,2000,3000,5000,10000,20000,30000,50000,100000,200000,300000,500000};
+            TimeScaleTrackBar.Minimum = 0;
+            TimeScaleTrackBar.Maximum = this._Timescales.Length - 1;
+            TimeScaleTrackBar.Value = 10;
+            VoltageScaleTrackBar.Minimum = 0;
+            VoltageScaleTrackBar.Maximum = this._Voltagescales.Length - 1;
+            VoltageScaleTrackBar.Value = this._Voltagescales.Length - 2;
+            AcquisitionRateTrackBar1.Minimum = 0;
+            AcquisitionRateTrackBar1.Maximum = this._AcqusitionRates.Length - 1;
+            AcquisitionRateTrackBar1.Value = this._AcqusitionRates.Length - 8;
+            trackBar1_Scroll(this, null);
+            VoltageScaleTrackBar_Scroll(this, null);
+            AcuisitionRateTrackBar1_Scroll(this, null);
+
+            
+        }
+
+        private void Oscilloscope_closed(object sender, FormClosingEventArgs e)
+        {
+            e.Cancel = true;
+            this.stop_Click(this,null);
+            this.Visible = false;
+
+        }
+
+        private void Oscilloscope_Load(object sender, EventArgs e)
+        {
+            tableLayoutPanel1.ClientSize = this.ClientSize;
+        }
+        private void OscilloscopeResize(object sender, EventArgs e)
+        {
+            tableLayoutPanel1.ClientSize = this.ClientSize;
+        }
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+        private void channel_1_DAC_Enabled_CheckedChanged(object sender, EventArgs e)
+        {
+            channel_enabled_checkedChanged(channel_1_DAC_Enabled, 1);
+        }
+        private void channel_2_DAC_Enabled_CheckedChanged(object sender, EventArgs e)
+        {
+            channel_enabled_checkedChanged(channel_2_DAC_Enabled, 2);
+
+        }
+        private void channel_3_DAC_Enabled_CheckedChanged(object sender, EventArgs e)
+        {
+            channel_enabled_checkedChanged(channel_3_DAC_Enabled, 3);
+        }
+        private void channel_4_DAC_Enabled_CheckedChanged(object sender, EventArgs e)
+        {
+            channel_enabled_checkedChanged(channel_4_DAC_Enabled, 4);
+        }
+        private void channel_enabled_checkedChanged(CheckBox ClickedCheckbox, byte NumberOfChannel)
+        {
+            bool wasAlive = MeasurementThread.Instance.MeasurementRunning;
+            if (wasAlive) this.stop_Click(this, null);
+            if (ClickedCheckbox.Checked)
+            {
+                Oscilloscope_Controller.ShowChannel(NumberOfChannel);
+            }
+            else
+            {
+                Oscilloscope_Controller.HideChannel(NumberOfChannel);
+            }
+            if (wasAlive) this.start_Click(this, null);
+        }
+
+        
+        private void trackBar1_Scroll(object sender, EventArgs e)
+        {
+            TimeScale.Text = Convert.ToString(_Timescales[TimeScaleTrackBar.Value] * 1000);
+            
+        }
+
+        private void _initDAC(object sender=null, EventArgs e=null)
+        {
+            AI_Channels.Instance.DisableAllChannelsForContiniousDataAcquisition();
+            AI_Channels.Instance.SetPointsPerBlockValue(Convert.ToInt32(PointsPerBlock.Text));
+            AI_Channels.Instance.SetSamplingRate(Convert.ToInt32(Acqusition_Rate.Text));
+            this.ReloadChannels();
+        }
+        private void _initGraphics()
+        {
+            Oscilloscope_Controller.SubscribeForContiniousDataAcquisition();
+        }
+        private void _initFileSystem()
+        {
+            double timeLimit = 0;
+            if (RecordTime_Limit.Checked)
+                if (TimeLimit.Text != "")
+                    try
+                    {
+                        timeLimit = (double)Convert.ToDouble(TimeLimit.Text, ImportantConstants.NumberFormat()) / 1000;
+                    }
+                    catch (FormatException ex)
+                    {
+                        timeLimit = 0;
+                        MessageBox.Show(ex.Message);
+                    }
+            if (RecordingInFile_Enabled.Checked)
+            {
+                FileManager.Instance.workfolder = FolderName.Text;
+                if (FolderName.Text == "") FolderName.Text = FileManager.Instance.workfolder;
+                if (FileManager.Instance.FileExists(filename_textbox.Text))
+                {
+                    filename_textbox.Text = FileManager.Instance.suggestFileNameWithIncrement(filename_textbox.Text);
+                }
+
+
+                if (RawDataRecording.Checked)
+                {
+                    FileManager.Instance.PrepareForRAW_RealTimeDataRecording(filename_textbox.Text, timeLimit);
+                }
+                else FileManager.Instance.PrepareForRealTimeDataRecording(filename_textbox.Text, ImportantConstants.Rload, ImportantConstants.K_Ampl_first_Channel, AI_Channels.Instance.ACQ_Rate, timeLimit);
+            }
+
+        }
+        private void _StartAcquisitionThread()
+        {
+            MeasurementThread.Instance.StartThread(TimeTraceManager.ContiniousAcquisition);
+            
+        }
+        private void _StartVoltageMeasurementThread()
+        {
+            Measurement = new Thread(new ThreadStart(TimeTraceManager.ContiniousAcquisition));
+            Measurement.Start();
+        }
+        private void _initRawTimeTraceMeasurement()
+        {
+            _initDAC();
+            _initGraphics();
+            _initFileSystem();
+            _StartAcquisitionThread();
+        }
+
+        private void _initTimeTraceMeasurement()
+        {
+            channel_4_DAC_Enabled.Checked = false;
+            channel_3_DAC_Enabled.Checked = false;
+            channel_2_DAC_Enabled.Checked = false;
+            channel_1_DAC_Enabled.Checked = true;
+
+            _initDAC();
+
+            _initGraphics();
+            _initFileSystem();
+
+        }
+        private void start_Click(object sender, EventArgs e)
+        {
+            
+            if (MeasurementThread.Instance.MeasurementRunning)
+            {
+                AllCustomEvents.Instance.MeasurementFinished += start_Click;
+                MeasurementThread.Instance.MeasurementRunning = false; return;
+            }
+            else
+                AllCustomEvents.Instance.MeasurementFinished -= start_Click;
+ 
+            if ((RecordingInFile_Enabled.Checked) && (!RawDataRecording.Checked))
+            {
+                _initTimeTraceMeasurement();
+            }
+            else
+            {
+                _initRawTimeTraceMeasurement();
+            }
+            
+        }
+
+        private void ReloadChannels()
+        {
+            AI_Channels.Instance.DisableAllChannelsForContiniousDataAcquisition();
+            for (int i = 0; i < DAC_AC_Enabled_CheckBoxes.Length; i++)
+            {
+                if(DAC_AC_Enabled_CheckBoxes[i].Checked)
+                    AI_Channels.Instance.ChannelArray[i].Enabled = true;
+            }
+        }
+
+         private void stop_Click(object sender, EventArgs e)
+         {
+             MeasurementThread.Instance.MeasurementRunning = false;
+             
+             FileManager.Instance.FinishWritingToFile();
+             Oscilloscope_Controller.UnsubscribeForContiniousDataAcquisition();
+         }
+
+         private void TimeScale_TextChanged(object sender, EventArgs e)
+         {
+             Oscilloscope_Controller.SetTimeScale(Convert.ToDouble(TimeScale.Text, ImportantConstants.NumberFormat())/1000);
+         }
+         private void VoltageScaleTrackBar_Scroll(object sender, EventArgs e)
+         {
+             VoltageScale.Text = Convert.ToString(_Voltagescales[VoltageScaleTrackBar.Value],ImportantConstants.NumberFormat());
+         }
+         private void VoltageScale_TextChanged(object sender, EventArgs e)
+         {
+             Oscilloscope_Controller.SetVoltageScale(Convert.ToDouble(VoltageScale.Text, ImportantConstants.NumberFormat()));
+         }
+         private void AcuisitionRateTrackBar1_Scroll(object sender, EventArgs e)
+         {
+             Acqusition_Rate.Text = Convert.ToString(_AcqusitionRates[AcquisitionRateTrackBar1.Value]);
+         }
+         private void Acqusition_Rate_TextChanged(object sender, EventArgs e)
+         {
+             this.RestartMeasurement();
+         }
+         private void RestartMeasurement()
+         {
+             if (MeasurementThread.Instance.MeasurementRunning)
+             {
+                 this.start_Click(this, null);
+             }
+         }
+         private void PointsPerBlock_TextChanged(object sender, EventArgs e)
+         {
+             this.RestartMeasurement();
+         }
+         private void button3_Click(object sender, EventArgs e)
+         {
+             DialogResult result= folderBrowserDialog1.ShowDialog();
+             if(result==DialogResult.OK)
+                 FolderName.Text=folderBrowserDialog1.SelectedPath;
+         }
+         private void oscilloscope_toolstrip_rescale_Click(object sender, EventArgs e)
+         {
+             this.TimeScale_TextChanged(this, null);
+             this.VoltageScale_TextChanged(this, null);
+         }
+         private void toolStripButton2_Click(object sender, EventArgs e)
+         {
+             this.Oscilloscope_Controller.ClearGraphs();
+             this.ReloadChannels();
+         }
+         private void RecordingInFile_Enabled_CheckedChanged(object sender, EventArgs e)
+         {
+             if (MeasurementThread.Instance.MeasurementRunning)
+             {
+                 this.start_Click(this, null);
+             }
+         }
+         private void RawDataRecording_CheckedChanged(object sender, EventArgs e)
+         {
+             if (MeasurementThread.Instance.MeasurementRunning)
+             {
+                 this.start_Click(this, null);
+             }
+         }
+         private void RecordTime_Limit_CheckedChanged(object sender, EventArgs e)
+         {
+             if (MeasurementThread.Instance.MeasurementRunning)
+             {
+                 this.start_Click(this, null);
+             }
+         }
+
+
+
+
+    }
+}

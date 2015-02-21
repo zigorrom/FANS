@@ -1,0 +1,143 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace FANS.classes
+{
+    class AllCustomEvents
+    {
+        private static AllCustomEvents _instance;
+        public static AllCustomEvents Instance
+        {
+            get
+            {
+                if (_instance == null) _instance = new AllCustomEvents();
+                return _instance;
+            }
+        }
+        private AllCustomEvents(){
+        }
+
+        public virtual void OnAI_Data_Arrived(object Sender,ADC_DataArrivedEventArgs e)
+        {
+            EventHandler<ADC_DataArrivedEventArgs> handler = _AI_Data_Arrived;
+            if (handler != null)
+            {
+                handler(Sender, e);
+            }
+        }
+        private EventHandler<ADC_DataArrivedEventArgs> _AI_Data_Arrived;
+        public event EventHandler<ADC_DataArrivedEventArgs> AI_Data_Arrived
+        {
+            add
+            {
+                if (_AI_Data_Arrived == null || !_AI_Data_Arrived.GetInvocationList().Contains(value))
+                {
+                    _AI_Data_Arrived += value;
+                }
+            }
+            remove
+            {
+                _AI_Data_Arrived -= value;
+            }
+        }
+
+        private EventHandler<MeasuredVoltages_DataArrivedEventArgs> _AllVoltagesMeasured;
+        public event EventHandler<MeasuredVoltages_DataArrivedEventArgs> AllVoltagesMeasured
+        {
+            add
+            {
+                if (_AllVoltagesMeasured == null || !_AllVoltagesMeasured.GetInvocationList().Contains(value))
+                {
+                    _AllVoltagesMeasured += value;
+                }
+            }
+            remove
+            {
+                _AllVoltagesMeasured -= value;
+            }
+        }
+        public virtual void OnAllVoltagesMeasured(object sender, MeasuredVoltages_DataArrivedEventArgs e)
+        {
+            EventHandler<MeasuredVoltages_DataArrivedEventArgs> handler = _AllVoltagesMeasured;
+            if (handler != null)
+            {
+                handler(sender, e);
+            }
+        }
+
+        private EventHandler<EventArgs> _BeforeMeasurementStarted;
+        public event EventHandler<EventArgs> BeforeMeasurementStarted
+        {
+            add
+            {
+                if (_BeforeMeasurementStarted == null || !_BeforeMeasurementStarted.GetInvocationList().Contains(value))
+                {
+                    _BeforeMeasurementStarted += value;
+                }
+            }
+            remove
+            {
+                _BeforeMeasurementStarted -= value;
+            }
+        }
+        public virtual void OnBeforeMeasurementsStarted(object sender, EventArgs e)
+        {
+            EventHandler<EventArgs> handler = _BeforeMeasurementStarted;
+            if (handler != null)
+            {
+                handler(sender, e);
+            }
+        }
+
+        private EventHandler<EventArgs> _MeasurementStopped;
+        public event EventHandler<EventArgs> MeasurementStopped
+        {
+            add
+            {
+                if (_MeasurementStopped == null || !_MeasurementStopped.GetInvocationList().Contains(value))
+                {
+                    _MeasurementStopped += value;
+                }
+            }
+            remove
+            {
+                _MeasurementStopped -= value;
+            }
+        }
+        public virtual void OnMeasurementStopped(object sender, EventArgs e)
+        {
+            EventHandler<EventArgs> handler = _MeasurementStopped;
+            if (handler != null)
+            {
+                handler(sender, e);
+            }
+        }
+
+        private EventHandler<EventArgs> _VoltagesMeasurementDone;
+        public event EventHandler<EventArgs> VoltagesMeasurementDone
+        {
+            add
+            {
+                if (_VoltagesMeasurementDone == null || !_VoltagesMeasurementDone.GetInvocationList().Contains(value))
+                {
+                    _VoltagesMeasurementDone += value;
+                }
+            }
+            remove
+            {
+                _VoltagesMeasurementDone -= value;
+            }
+        }
+        public virtual void OnVoltagesMeasurementDone(object sender, EventArgs e)
+        {
+            EventHandler<EventArgs> handler = _VoltagesMeasurementDone;
+            if (handler != null)
+            {
+                handler(sender, e);
+            }
+        }
+
+    }
+}

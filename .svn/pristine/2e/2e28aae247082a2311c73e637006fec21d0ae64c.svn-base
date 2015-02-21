@@ -1,0 +1,65 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+
+namespace FANS
+{
+    public partial class VoltagesControl : Form
+    {
+        private ComboBox[] DCRanges, ACRanges;
+        public VoltagesControl()
+        {
+            InitializeComponent();
+            DCRanges = new ComboBox[4] { Channel_1_DC_Range_combobox, Channel_2_DC_Range_combobox, Channel_3_DC_Range_combobox, Channel_4_DC_Range_combobox };
+            ACRanges = new ComboBox[4] { Channel_1_AC_Range_combobox, Channel_2_AC_Range_combobox, Channel_3_AC_Range_combobox, Channel_4_AC_Range_combobox };
+            foreach (ComboBox rgn in DCRanges)
+                rgn.SelectedIndex = 1;
+            foreach (ComboBox rgn in ACRanges)
+                rgn.SelectedIndex = 1;
+        }
+        
+
+    //making form movable
+    
+    
+    private const int WM_NCHITTEST = 0x84;
+    private const int HTCLIENT = 0x1;
+    private const int HTCAPTION = 0x2;
+    protected override void WndProc(ref Message message)
+    {
+        base.WndProc(ref message);
+
+        if (message.Msg == WM_NCHITTEST && (int)message.Result == HTCLIENT)
+            message.Result = (IntPtr)HTCAPTION;
+    }
+    //--------------------------
+
+    private void VoltagesControl_Load(object sender, EventArgs e)
+    {
+
+    }
+
+    private void VoltageControl_closing(object sender, FormClosingEventArgs e)
+    {
+        e.Cancel = true;
+        this.Visible = false;
+    }
+
+    private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+    {
+
+    }
+
+    private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+    {
+
+    }
+    
+     
+    }
+}

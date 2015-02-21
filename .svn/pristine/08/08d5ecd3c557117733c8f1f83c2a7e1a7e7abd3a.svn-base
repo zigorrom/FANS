@@ -1,0 +1,44 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using FANS.classes;
+namespace FANS
+{
+    public partial class NoiseSpectra : Form
+    {
+        NoiseSpectra_Graph GraphController;
+        public NoiseSpectra()
+        {
+            InitializeComponent();
+            GraphController = new NoiseSpectra_Graph(zedGraphControl1);
+        }
+
+        private void NoiseSpectraClosing(object sender, FormClosingEventArgs e)
+        {
+            e.Cancel = true;
+            this.Visible = false;
+        }
+
+        private void Form_Resize(object sender, EventArgs e)
+        {
+            splitContainer1.SplitterDistance = splitContainer1.Height - 22;
+        }
+
+        private void Start_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void OpenFolder_Click(object sender, EventArgs e)
+        {
+            DialogResult result = folderBrowserDialog1.ShowDialog();
+            if (result == DialogResult.OK)
+                FolderName.Text = folderBrowserDialog1.SelectedPath;
+        }
+    }
+}

@@ -1,0 +1,57 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace FANS.classes
+{
+    class VoltageMeasurement
+    {
+        private Agilent_AnalogInput_LowLevel _AI;
+        public VoltageMeasurement()
+        {
+            _AI = Agilent_AnalogInput_LowLevel.Instance;
+        }
+        private double singleVoltageMeasurement(int NumberOfChannel)
+        {
+            if (!(((NumberOfChannel - 100) <= 4) && ((NumberOfChannel - 100) > 0))) return 0;
+            string resultStr = _AI.tryToQueryString("MEAS? (@" + NumberOfChannel + ")");
+            return Convert.ToDouble(resultStr, ImportantConstants.NumberFormat());
+        }
+        public void setAverage(int Average)
+        {
+            if((Average<1)||(Average>1000))Average=100;
+            _AI.tryToWriteString("VOLT:AVER " + Average);
+        }
+        public void setRange(int NumberOfChannel, string Range)
+        {
+            string[] ranges = { "AUTO", "10", "5", "2.5", "1.25" };
+            if (!(((NumberOfChannel - 100) <= 4) && ((NumberOfChannel - 100) > 0))) NumberOfChannel = 101;
+            if (!ranges.Contains(Range)) Range = "AUTO";
+            _AI.tryToWriteString("VOLT:RANG " + Range + ", @(" + NumberOfChannel + ")");
+        }
+        public void setPolarity(int NumberOfChannel, string Polarity)
+        {
+            string[] polarities = { "BIP", "UNIP" };
+            if (!(((NumberOfChannel - 100) <= 4) && ((NumberOfChannel - 100) > 0))) NumberOfChannel = 101;
+            if (!polarities.Contains(Polarity)) Polarity = "BIP";
+            _AI.tryToWriteString("VOLT:POL " + Polarity + ", @(" + NumberOfChannel + ")");
+        }
+
+
+        private double[] VoltageMeasurement101_104()
+        {
+            
+            double[] result = new double[4];
+            string resultStr = _AI.tryToQueryString("MEAS? (@101:104)");
+            string[] parsedResultStr = resultStr.Split(',');
+            for (int i = 0; i < 4; i++)
+                result[i] = Convert.ToDouble(parsedResultStr[i],ImportantConstants.NumberFormat());
+                return result; 
+        }
+
+
+        
+        
+    }
+}

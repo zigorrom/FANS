@@ -1,0 +1,20 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Globalization;
+namespace FANS.classes
+{
+    static class ImportantConstants
+    {
+        public static NumberFormatInfo NumberFormat()
+        {
+         NumberFormatInfo  a = new NumberFormatInfo();
+            a.NumberDecimalSeparator = ".";
+            a.NumberGroupSeparator = "";
+            return a;
+        }
+        public static double[] Ranges = new double[] { 1.25, 2.5, 5, 10 };
+
+    }
+}

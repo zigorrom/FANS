@@ -1,0 +1,280 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{43F45F41-BB0B-4320-87EA-D2C805F0A38B}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>FANS</RootNamespace>
+    <AssemblyName>FANS</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>FANS.Program</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="FourierTransformProvider">
+      <HintPath>..\..\Fourier\FourierTransformProvider\FourierTransformProvider\bin\Debug\FourierTransformProvider.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="ZedGraph">
+      <HintPath>..\..\zedgraph_dll_v5.1.5\ZedGraph.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AutomatedApplyVoltage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AutomatedApplyVoltage.Designer.cs">
+      <DependentUpon>AutomatedApplyVoltage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ChannelProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ChannelProperties.Designer.cs">
+      <DependentUpon>ChannelProperties.cs</DependentUpon>
+    </Compile>
+    <Compile Include="classes\Data Handling\DataStringConverter.cs" />
+    <Compile Include="classes\Data Handling\DataStrings\NoiseSpectraDataString.cs" />
+    <Compile Include="classes\Data Handling\DFT.cs" />
+    <Compile Include="classes\Data Handling\FFT.cs" />
+    <Compile Include="classes\Data Handling\FFT_2Thread.cs" />
+    <Compile Include="classes\Data Handling\FFT_4Thread.cs" />
+    <Compile Include="classes\Data Handling\ListOfDataStrings\ListOfNoiseDataString.cs" />
+    <Compile Include="classes\DoubleRangeBase.cs" />
+    <Compile Include="classes\Events\AllCustomEvents.cs" />
+    <Compile Include="classes\Data Handling\ListOfDataStrings\ListOfRawADCDataString.cs" />
+    <Compile Include="classes\Data Handling\ListOfDataStrings\ListOfTimeTraceMeasurDataString.cs" />
+    <Compile Include="classes\Data Handling\DataStrings\TimeTraceMeasurDataString.cs" />
+    <Compile Include="classes\Events\EventArguments\AC_AutoRangeEventArgs.cs" />
+    <Compile Include="classes\Events\EventArguments\ADC_DataArrivedEventArgs.cs" />
+    <Compile Include="classes\Data Handling\ParentClasses\ListDataString.cs" />
+    <Compile Include="classes\Data Handling\ParentClasses\DataString.cs" />
+    <Compile Include="classes\Data Handling\ListOfDataStrings\ListOfMeasurDataStringExtended.cs" />
+    <Compile Include="classes\Data Handling\ListOfDataStrings\ListOfMeasurDataString.cs" />
+    <Compile Include="classes\Data Handling\DataStrings\MeasurDataStringExtended.cs" />
+    <Compile Include="classes\Data Handling\DataStrings\MeasurDataString.cs" />
+    <Compile Include="classes\Events\EventArguments\FinalNoiseEventArgs.cs" />
+    <Compile Include="classes\Events\EventArguments\MeasuredVoltages_DataArrivedEventArgs.cs" />
+    <Compile Include="classes\Events\EventArguments\NoiseEventArgs.cs" />
+    <Compile Include="classes\Events\EventArguments\StatusEventArgs.cs" />
+    <Compile Include="classes\Events\EventArguments\VoltageAdjustment_EventArgs.cs" />
+    <Compile Include="classes\Files\NoiseMeasurementFileManager.cs" />
+    <Compile Include="classes\Files\TimeTraceFileManager.cs" />
+    <Compile Include="classes\Data Handling\DataStrings\RawADCDataString.cs" />
+    <Compile Include="classes\Files\FileManagerParent.cs" />
+    <Compile Include="classes\Graphics\NoiseSpectra_Graph.cs" />
+    <Compile Include="classes\Hardware\HighLevel\AnalogInput\AI_Channel.cs" />
+    <Compile Include="classes\Hardware\HighLevel\AnalogInput\AI_Channels.cs" />
+    <Compile Include="classes\Hardware\HighLevel\AnalogInput\AI_Channel_Latch.cs" />
+    <Compile Include="classes\Hardware\HighLevel\AnalogOutput\AO_Channel.cs" />
+    <Compile Include="classes\Hardware\HighLevel\AnalogInput\ProgrammableFilter.cs" />
+    <Compile Include="classes\Hardware\HighLevel\AnalogInput\ProgrammableGainAmplifier.cs" />
+    <Compile Include="classes\Hardware\HighLevel\AnalogOutput\AO_Channels.cs" />
+    <Compile Include="classes\Hardware\LowLevel\Agilent_AnalogOutput_LowLevel.cs" />
+    <Compile Include="classes\Hardware\LowLevel\DAQ_Bit.cs" />
+    <Compile Include="classes\Hardware\VeryHighLevel\AI_Channel_Parameters.cs" />
+    <Compile Include="classes\Hardware\VeryHighLevel\ApplyingVoltage.cs" />
+    <Compile Include="classes\Hardware\VeryHighLevel\NoiseSpectraMeasurement.cs" />
+    <Compile Include="classes\Hardware\VeryHighLevel\TimeTracesAcquisition.cs" />
+    <Compile Include="classes\Hardware\VeryHighLevel\VoltageMeasurement.cs" />
+    <Compile Include="classes\ImportantConstants.cs" />
+    <Compile Include="classes\Graphics\ZedGraphController.cs" />
+    <Compile Include="classes\Graphics\Oscilloscope_Graph.cs" />
+    <Compile Include="classes\Hardware\LowLevel\Agilent_USB_DAQ.cs" />
+    <Compile Include="classes\CheckValue.cs" />
+    <Compile Include="classes\Hardware\LowLevel\Agilent_DigitalOutput_LowLevel.cs" />
+    <Compile Include="classes\Hardware\LowLevel\Agilent_AnalogInput_LowLevel.cs" />
+    <Compile Include="classes\MotorizedVoltageApplier.cs" />
+    <Compile Include="classes\Threads\MeasurementThread.cs" />
+    <Compile Include="classes\VoltageRange.cs" />
+    <Compile Include="interfaces\MeasurDataInterface.cs" />
+    <Compile Include="MeasurementInputControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MeasurementInputControl.Designer.cs">
+      <DependentUpon>MeasurementInputControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NoiseMeasurementAutomation.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NoiseMeasurementAutomation.Designer.cs">
+      <DependentUpon>NoiseMeasurementAutomation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NoiseSpectra.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NoiseSpectra.Designer.cs">
+      <DependentUpon>NoiseSpectra.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Oscilloscope.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Oscilloscope.Designer.cs">
+      <DependentUpon>Oscilloscope.cs</DependentUpon>
+    </Compile>
+    <Compile Include="interfaces\SCPI_Device.cs" />
+    <Compile Include="Main.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Main.Designer.cs">
+      <DependentUpon>Main.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OutputControl.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OutputControl.Designer.cs">
+      <DependentUpon>OutputControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VoltagesControl.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VoltagesControl.Designer.cs">
+      <DependentUpon>VoltagesControl.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="AutomatedApplyVoltage.resx">
+      <DependentUpon>AutomatedApplyVoltage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ChannelProperties.resx">
+      <DependentUpon>ChannelProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Main.resx">
+      <DependentUpon>Main.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MeasurementInputControl.resx">
+      <DependentUpon>MeasurementInputControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NoiseMeasurementAutomation.resx">
+      <DependentUpon>NoiseMeasurementAutomation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NoiseSpectra.resx">
+      <DependentUpon>NoiseSpectra.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Oscilloscope.resx">
+      <DependentUpon>Oscilloscope.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OutputControl.resx">
+      <DependentUpon>OutputControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="VoltagesControl.resx">
+      <DependentUpon>VoltagesControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="VisaComLib">
+      <Guid>{DB8CBF00-D6D3-11D4-AA51-00A024EE30BD}</Guid>
+      <VersionMajor>5</VersionMajor>
+      <VersionMinor>2</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\refresh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\clear.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 Client Profile %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

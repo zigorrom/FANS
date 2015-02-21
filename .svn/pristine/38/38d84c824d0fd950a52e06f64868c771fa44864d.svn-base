@@ -1,0 +1,177 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using Ivi.Visa.Interop;
+using FANS.interfaces;
+using FANS.classes;
+using System.Threading;
+using System.IO;
+using ZedGraph;
+using System.Diagnostics;
+namespace FANS
+{  
+    
+    public partial class Main : Form
+    {
+
+        Oscilloscope Oscilloscope_Form;
+        VoltagesControl VoltagesControl_Form;
+        ChannelProperties ChannelProperties_Form;
+        NoiseSpectra NoiseSpectra_Form;
+        public Main()
+        {
+            InitializeComponent();
+            Oscilloscope_Form = new Oscilloscope();
+            Oscilloscope_Form.MdiParent = this;
+
+            VoltagesControl_Form = new VoltagesControl();
+            VoltagesControl_Form.MdiParent = this;
+
+            ChannelProperties_Form = new ChannelProperties();
+            ChannelProperties_Form.MdiParent = this;
+
+            NoiseSpectra_Form = new NoiseSpectra();
+            NoiseSpectra_Form.MdiParent = this;
+            
+        }
+
+
+
+        private void oscilloscopeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (MeasurementThread.Instance.MeasurementRunning) { MessageBox.Show("Cannot close form. Measurement is running"); return; }
+            if(Oscilloscope_Form.Visible)
+              Oscilloscope_Form.Visible = false;
+            else
+              Oscilloscope_Form.Visible = true;
+        }
+
+        private void Main_Window_Close(object sender, FormClosingEventArgs e)
+        {
+            foreach (Form child in this.MdiChildren)
+                child.Close();
+            Application.Exit();
+        }
+
+        private void connectToDeviceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Agilent_USB_DAQ.Instance.Open("USB0::0x0957::0x1718::TW52524501::INSTR");
+            Agilent_USB_DAQ.Instance.WriteString("*CLS");
+            Agilent_USB_DAQ.Instance.WriteString("*RST");
+            Agilent_USB_DAQ.Instance.WriteString("*IDN?");
+            MessageBox.Show(Agilent_USB_DAQ.Instance.ReadString());
+            
+        }
+
+       
+
+        private void testToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+           /* StreamReader a = new StreamReader("C:\\Users\\s.pud\\Desktop\\TestFANS\\ololo.dat");
+            string Data = a.ReadToEnd();
+            DataStringConverter b = new DataStringConverter();
+            Int16[] result = b.ParseDataStringToInt(Data);
+            StreamWriter c = new StreamWriter("C:\\Users\\s.pud\\Desktop\\TestFANS\\pity.dat");
+            int d = 0;
+            foreach (int f in result)
+            {
+                c.WriteLine(d + ", " + f);
+                    d++;
+            }
+            //AI_Channels.Instance.VoltageMeasurement101_104();       
+            Agilent_DigitalOutput_LowLevel.Instance.setToZero(502, 0);
+            Agilent_DigitalOutput_LowLevel.Instance.setToZero(502, 1);
+
+            Agilent_DigitalOutput_LowLevel.Instance.setToZero(504, 1);
+            Agilent_DigitalOutput_LowLevel.Instance.BitRelayPulse(504, 0);
+            Agilent_DigitalOutput_LowLevel.Instance.setToOne(504, 1);
+            Agilent_DigitalOutput_LowLevel.Instance.BitRelayPulse(504, 0);
+            Thread.Sleep(1000);
+            Agilent_DigitalOutput_LowLevel.Instance.setToZero(502, 0);
+            Agilent_DigitalOutput_LowLevel.Instance.setToOne(502, 1);
+
+            Agilent_DigitalOutput_LowLevel.Instance.setToZero(504, 1);
+            Agilent_DigitalOutput_LowLevel.Instance.BitRelayPulse(504, 0);
+            Agilent_DigitalOutput_LowLevel.Instance.setToOne(504, 1);
+            Agilent_DigitalOutput_LowLevel.Instance.BitRelayPulse(504, 0);
+            Thread.Sleep(1000);
+            Agilent_DigitalOutput_LowLevel.Instance.setToOne(502, 0);
+            Agilent_DigitalOutput_LowLevel.Instance.setToZero(502, 1);
+
+            Agilent_DigitalOutput_LowLevel.Instance.setToZero(504, 1);
+            Agilent_DigitalOutput_LowLevel.Instance.BitRelayPulse(504, 0);
+            Agilent_DigitalOutput_LowLevel.Instance.setToOne(504, 1);
+            Agilent_DigitalOutput_LowLevel.Instance.BitRelayPulse(504, 0);
+            Thread.Sleep(1000);
+            Agilent_DigitalOutput_LowLevel.Instance.setToOne(502, 0);
+            Agilent_DigitalOutput_LowLevel.Instance.setToOne(502, 1);
+
+            Agilent_DigitalOutput_LowLevel.Instance.setToZero(504, 1);
+            Agilent_DigitalOutput_LowLevel.Instance.BitRelayPulse(504, 0);
+            Agilent_DigitalOutput_LowLevel.Instance.setToOne(504, 1);
+            Agilent_DigitalOutput_LowLevel.Instance.BitRelayPulse(504, 0);
+            */
+            
+            PointPairList b = new PointPairList();
+            StreamReader olo = new StreamReader("d:/testFFT.dat");
+            string ReadString;
+            while ((ReadString = olo.ReadLine()) != null)
+                b.Add(0, Convert.ToDouble(ReadString));
+            //b.Add(0, 1); b.Add(0, 0); b.Add(0, 0); b.Add(0, 0); b.Add(0, 0); b.Add(0, 0); b.Add(0, 0); b.Add(0, 0);
+            FFT_2Thread a = new FFT_2Thread((int)Math.Log(b.Count, 2));
+            var watch = Stopwatch.StartNew();
+            
+            
+            // the code that you want to measure comes here
+            Complex[] c = a.makeFFT(b);
+            watch.Stop();
+            long elapsedMs = watch.ElapsedMilliseconds;
+            MessageBox.Show(elapsedMs.ToString());
+            StreamWriter wr = new StreamWriter("d:/testFFTResult.dat");
+            foreach (Complex cc in c)
+            {
+                if (Math.Abs(cc.Real) < 1e-10) cc.Real = 0;
+                if (Math.Abs(cc.Imaginary) < 1e-10) cc.Imaginary = 0;                   
+                wr.WriteLine(cc.Real.ToString("G4") + "\t" + cc.Imaginary.ToString("G4"));
+            }
+            olo.Close();
+            wr.Close();
+            watch = Stopwatch.StartNew();
+            TimeTracesAcquisition o = new TimeTracesAcquisition();
+            AI_Channels.Instance.SingleShotPointsPerBlock = 524288;
+            AI_Channels.Instance.ACQ_Rate = 500000;
+            o.MakeSingleShot1(1);
+            watch.Stop();
+            elapsedMs = watch.ElapsedMilliseconds;
+            MessageBox.Show(elapsedMs.ToString());
+            
+
+            
+        }
+
+        private void voltageControlToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            VoltagesControl_Form.Visible = VoltagesControl_Form.Visible ^ true;
+        }
+
+        private void channelPropertiesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ChannelProperties_Form.Visible = ChannelProperties_Form.Visible ^ true;
+        }
+
+        private void noiseSpectraToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            NoiseSpectra_Form.Visible = NoiseSpectra_Form.Visible ^ true;
+
+        }
+
+      
+
+
+    }
+}

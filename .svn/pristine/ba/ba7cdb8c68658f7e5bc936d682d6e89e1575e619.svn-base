@@ -1,0 +1,56 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using ZedGraph;
+namespace FANS.classes
+{
+   
+
+    class TimeTracesAcquisition
+    {
+
+        private AI_Channels _Channels;
+        private DataStringConverter _DataConverter;
+        public TimeTracesAcquisition()
+        {
+            _Channels = AI_Channels.Instance;
+            _Channels.Read_AI_Channel_Status();
+            _DataConverter = new DataStringConverter();
+        }
+
+       
+        
+        public void ContiniousAcquisition()
+        {
+            _Channels.Read_AI_Channel_Status();
+            int ACQ_Rate = _Channels.ReadAcquisitionRate();
+            _Channels.StartAnalogAcqusition();
+            while (MeasurementThread.Instance.MeasurementRunning)
+            {
+                while (!Agilent_USB_DAQ.Instance.CheckAcquisitionStatus()) ;
+                string result = Agilent_USB_DAQ.Instance.QueryString("WAV:DATA?");
+                int[] resultInt = _DataConverter.ParseDataStringToInt(result);
+                PointPairList[] ChannelData = _DataConverter.ParseIntArrayIntoChannelData(resultInt, ACQ_Rate);
+                AllCustomEvents.Instance.OnAI_Data_Arrived(this, new ADC_DataArrivedEventArgs(ChannelData, result));
+            }
+            _Channels.StopAnalogAcqusition();
+        }
+        public void MakeSingleShot()
+        {
+            _Channels.Read_AI_Channel_Status();
+            int ACQ_Rate = _Channels.ReadAcquisitionRate();
+            _Channels.AcquireSingleShot();
+
+            while (!Agilent_USB_DAQ.Instance.CheckSingleShotAcquisitionStatus()) ;
+            string result = Agilent_USB_DAQ.Instance.QueryString("WAV:DATA?");
+            int[] resultInt = _DataConverter.ParseDataStringToInt(result);
+            PointPairList[] ChannelData = _DataConverter.ParseIntArrayIntoChannelData(resultInt, ACQ_Rate);
+            AllCustomEvents.Instance.OnAI_Data_Arrived(this, new ADC_DataArrivedEventArgs(ChannelData));
+        }
+
+        
+
+    }
+}
+

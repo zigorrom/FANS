@@ -1,0 +1,21 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using ZedGraph;
+namespace FANS.classes
+{
+    class ADC_DataArrivedEventArgs:EventArgs
+    {
+        public PointPairList[] data;
+        public AI_Channel[] channels;
+        public string answer;
+        public ADC_DataArrivedEventArgs(PointPairList[] Data,AI_Channel[] Channels,string answ=""):base()
+        {
+            data = Data;
+            channels = Channels;
+            answer = answ;
+        }
+
+    }
+}

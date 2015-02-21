@@ -1,0 +1,121 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using ZedGraph;
+namespace FANS.classes
+{
+    public class Oscilloscope_Graph
+    {
+        private ZedGraphControl _zgc;
+        private GraphPane _zgcGraphPane;
+        private ZedGraphController _zgcController;
+        private System.Drawing.Color[] _channelColors;
+        public Oscilloscope_Graph(ZedGraphControl zgc)
+        {
+            this._zgc = zgc;
+            this._zgcGraphPane = this._zgc.GraphPane;
+            _zgcController = new ZedGraphController(zgc);
+            _zgcController.DisableTitle();
+
+            //this._zgcGraphPane.XAxis.Title.Text = "Time (ms)";
+            this._zgcGraphPane.XAxis.Title.IsVisible = false;
+            this._zgcGraphPane.YAxis.Title.Text = "Voltage (V)";
+            this._zgcGraphPane.XAxis.Cross = 0;
+            this._zgcGraphPane.YAxis.Cross = 0;
+            _channelColors = new System.Drawing.Color[4] { System.Drawing.Color.Black, System.Drawing.Color.Green, System.Drawing.Color.Blue, System.Drawing.Color.Red };
+        }
+        public void ShowChannel(byte Number)
+        {
+            LineItem curve = _zgcController.getCurveByName("Channel " + Number);
+            if (curve != null) return;
+            _zgcController.AddCurve(new PointPairList(), _channelColors[Number-1], "Channel " + Number);
+        }
+        public void HideChannel(byte Number)
+        {
+            _zgcController.Clear("Channel " + Number);
+        }
+        public void SubscribeForContiniousDataAcquisition()
+        {
+            AllCustomEvents.Instance.AI_Data_Arrived += AddDataToGraph;
+        }
+        public void UnsubscribeForContiniousDataAcquisition()
+        {
+            AllCustomEvents.Instance.AI_Data_Arrived -= AddDataToGraph;
+        }
+       private void AddDataToGraph(object Sender, ADC_DataArrivedEventArgs data)
+        {
+            int i = 0;
+            foreach (AI_Channel channel in AI_Channels.Instance.ChannelArray)
+            {
+                if (channel.Enabled)
+                {
+                    _AddPointPairListToTrace(data.data[i], channel.number,AI_Channels.Instance.ACQ_Rate);
+                }
+                i++;
+            }
+            _zgc.AxisChange();
+            _zgc.Invalidate();
+        }
+        private void _AddPointPairListToTrace(PointPairList data, int traceNumber,int AcquisitionRate)
+        {
+            traceNumber -= 100;
+            LineItem TimeTrace = _zgcController.getCurveByName("Channel " + traceNumber);
+            PointPairList TimeTracePoints = new PointPairList(TimeTrace.Points);
+            
+            double LastXValue;
+            if (TimeTracePoints.Count == 0) LastXValue = 0;
+            else LastXValue= TimeTracePoints[TimeTracePoints.Count-1].X;
+            
+            foreach (PointPair NewDataPoint in data)
+            {
+                PointPair ToInsert = new PointPair(NewDataPoint);
+                ToInsert.X += LastXValue;
+                //NewDataPoint.Y *= traceNumber;
+                TimeTracePoints.Add(ToInsert);
+            }
+            LastXValue = TimeTracePoints[TimeTracePoints.Count-1].X;
+            
+            int NumberOfPointsToRemove = (int)Math.Ceiling((LastXValue - _zgcGraphPane.XAxis.Scale.Max) * AcquisitionRate);
+
+            if (NumberOfPointsToRemove>TimeTracePoints.Count) NumberOfPointsToRemove=TimeTracePoints.Count-1;
+            if (NumberOfPointsToRemove > 0)
+            {
+                for (int i = 0; i < NumberOfPointsToRemove; i++)
+                    TimeTracePoints.Remove(TimeTracePoints[0]);
+                double FirstXValue = TimeTracePoints[0].X;
+                for (int i = 0; i < TimeTracePoints.Count; i++)
+                    TimeTracePoints[i].X -= FirstXValue;
+
+            }
+            TimeTrace.Points = TimeTracePoints;
+
+        }
+        public void SetTimeScale(double Timescale)
+        {
+            _zgcGraphPane.XAxis.Scale.Min = 0;
+            _zgcGraphPane.XAxis.Scale.Max = Timescale * 5;
+            _zgcGraphPane.XAxis.Scale.MajorStep = Timescale;
+            _zgcGraphPane.XAxis.Scale.MinorStep = Timescale / 5;
+            _zgc.AxisChange();
+            _zgc.Invalidate();
+        }
+        public void SetVoltageScale(double Voltagescale)
+        {
+            _zgcGraphPane.YAxis.Scale.Min = -Voltagescale * 5;
+            _zgcGraphPane.YAxis.Scale.Max = Voltagescale * 5;
+            _zgcGraphPane.YAxis.Scale.MajorStep = Voltagescale;
+            _zgcGraphPane.YAxis.Scale.MinorStep = Voltagescale / 5;
+            _zgcGraphPane.XAxis.Scale.IsSkipFirstLabel = true;
+            _zgcGraphPane.XAxis.Scale.IsSkipLastLabel = true;
+            _zgc.AxisChange();
+            _zgc.Invalidate();
+
+        }
+        public void ClearGraphs()
+        {
+            _zgcGraphPane.CurveList.Clear();
+            _zgc.Invalidate();
+        }
+    }
+}

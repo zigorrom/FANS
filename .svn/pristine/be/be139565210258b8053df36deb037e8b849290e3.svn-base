@@ -1,0 +1,68 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+namespace FANS.classes
+{
+    
+    class MeasurementThread
+    {
+        public delegate void SomeMeasurement();
+        public static bool MeasurementInProgress;
+
+
+        private Thread _Measurement;
+
+        private static MeasurementThread _instance;
+        public static MeasurementThread Instance
+        {
+            get
+            {
+                if (_instance == null) _instance = new MeasurementThread();
+                return _instance;
+
+            }
+        }
+
+        public bool MeasurementRunning
+        {
+            get
+            {
+                if (_Measurement != null)
+                {
+                    if (_Measurement.IsAlive) return true;
+                    else if (MeasurementInProgress) this.StopThread();
+                }
+                return (MeasurementInProgress);
+            }
+            set
+            {
+                if (MeasurementInProgress)
+                {
+                    if (value == false)
+                        this.StopThread();
+                }
+            }              
+                    
+            
+        }
+
+        public void StartThread(SomeMeasurement DesiredFunction)
+        {
+            _Measurement = new Thread(new ThreadStart(DesiredFunction));
+            _Measurement.IsBackground = true;
+            MeasurementInProgress = true;
+            _Measurement.Start();
+        }
+        public void StopThread()
+        {
+            MeasurementInProgress = false;
+            _Measurement.Join();
+            //if (!result) _Measurement.Abort();
+            AllCustomEvents.Instance.OnMeasurementFinished(this, null);
+        }
+
+        
+    }
+}

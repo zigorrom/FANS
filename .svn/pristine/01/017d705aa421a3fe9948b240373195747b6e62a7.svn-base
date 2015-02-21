@@ -1,0 +1,133 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using Ivi.Visa.Interop;
+using FANS.interfaces;
+using FANS.classes;
+using System.Threading;
+using System.IO;
+
+namespace FANS
+{  
+    
+    public partial class Main : Form
+    {
+
+        Oscilloscope Oscilloscope_Form;
+        VoltagesControl VoltagesControl_Form;
+        ChannelProperties ChannelProperties_Form;
+        public Main()
+        {
+            InitializeComponent();
+            Oscilloscope_Form = new Oscilloscope();
+            Oscilloscope_Form.MdiParent = this;
+
+            VoltagesControl_Form = new VoltagesControl();
+            VoltagesControl_Form.MdiParent = this;
+
+            ChannelProperties_Form = new ChannelProperties();
+            ChannelProperties_Form.MdiParent = this;
+        }
+
+
+
+        private void oscilloscopeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (MeasurementThread.Instance.MeasurementRunning) { MessageBox.Show("Cannot close form. Measurement is running"); return; }
+            if(Oscilloscope_Form.Visible)
+              Oscilloscope_Form.Visible = false;
+            else
+              Oscilloscope_Form.Visible = true;
+        }
+
+        private void Main_Window_Close(object sender, FormClosingEventArgs e)
+        {
+            foreach (Form child in this.MdiChildren)
+                child.Close();
+            Application.Exit();
+        }
+
+        private void connectToDeviceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Agilent_USB_DAQ.Instance.Open("USB0::0x0957::0x1718::TW52524501::INSTR");
+            Agilent_USB_DAQ.Instance.WriteString("*CLS");
+            Agilent_USB_DAQ.Instance.WriteString("*RST");
+            Agilent_USB_DAQ.Instance.WriteString("*IDN?");
+            MessageBox.Show(Agilent_USB_DAQ.Instance.ReadString());
+            
+        }
+
+        private void fileManagerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+     
+            
+        }
+
+        private void testToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StreamReader a = new StreamReader("C:\\Users\\s.pud\\Desktop\\TestFANS\\ololo.dat");
+            string Data = a.ReadToEnd();
+            DataStringConverter b = new DataStringConverter();
+            Int16[] result = b.ParseDataStringToInt(Data);
+            StreamWriter c = new StreamWriter("C:\\Users\\s.pud\\Desktop\\TestFANS\\pity.dat");
+            int d = 0;
+            foreach (int f in result)
+            {
+                c.WriteLine(d + ", " + f);
+                    d++;
+            }
+            //AI_Channels.Instance.VoltageMeasurement101_104();       
+            Agilent_DigitalOutput_LowLevel.Instance.setToZero(502, 0);
+            Agilent_DigitalOutput_LowLevel.Instance.setToZero(502, 1);
+
+            Agilent_DigitalOutput_LowLevel.Instance.setToZero(504, 1);
+            Agilent_DigitalOutput_LowLevel.Instance.BitRelayPulse(504, 0);
+            Agilent_DigitalOutput_LowLevel.Instance.setToOne(504, 1);
+            Agilent_DigitalOutput_LowLevel.Instance.BitRelayPulse(504, 0);
+            Thread.Sleep(1000);
+            Agilent_DigitalOutput_LowLevel.Instance.setToZero(502, 0);
+            Agilent_DigitalOutput_LowLevel.Instance.setToOne(502, 1);
+
+            Agilent_DigitalOutput_LowLevel.Instance.setToZero(504, 1);
+            Agilent_DigitalOutput_LowLevel.Instance.BitRelayPulse(504, 0);
+            Agilent_DigitalOutput_LowLevel.Instance.setToOne(504, 1);
+            Agilent_DigitalOutput_LowLevel.Instance.BitRelayPulse(504, 0);
+            Thread.Sleep(1000);
+            Agilent_DigitalOutput_LowLevel.Instance.setToOne(502, 0);
+            Agilent_DigitalOutput_LowLevel.Instance.setToZero(502, 1);
+
+            Agilent_DigitalOutput_LowLevel.Instance.setToZero(504, 1);
+            Agilent_DigitalOutput_LowLevel.Instance.BitRelayPulse(504, 0);
+            Agilent_DigitalOutput_LowLevel.Instance.setToOne(504, 1);
+            Agilent_DigitalOutput_LowLevel.Instance.BitRelayPulse(504, 0);
+            Thread.Sleep(1000);
+            Agilent_DigitalOutput_LowLevel.Instance.setToOne(502, 0);
+            Agilent_DigitalOutput_LowLevel.Instance.setToOne(502, 1);
+
+            Agilent_DigitalOutput_LowLevel.Instance.setToZero(504, 1);
+            Agilent_DigitalOutput_LowLevel.Instance.BitRelayPulse(504, 0);
+            Agilent_DigitalOutput_LowLevel.Instance.setToOne(504, 1);
+            Agilent_DigitalOutput_LowLevel.Instance.BitRelayPulse(504, 0);
+
+        }
+
+        private void voltageControlToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            VoltagesControl_Form.Visible = VoltagesControl_Form.Visible ^ true;
+        }
+
+        private void channelPropertiesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ChannelProperties_Form.Visible = ChannelProperties_Form.Visible ^ true;
+        }
+
+      
+
+
+    }
+}
