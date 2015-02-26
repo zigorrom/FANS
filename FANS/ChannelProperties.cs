@@ -20,16 +20,21 @@ namespace FANS
             Frequency_ComboBox.SelectedValueChanged -= SomeValuerChanged;
             Filter_Gain.SelectedValueChanged -= SomeValuerChanged;
             PGA_Gain.SelectedValueChanged -= SomeValuerChanged;
-
+            CurrentAmpGains.SelectedValueChanged -= SomeValuerChanged;
+            SecondAmpGains.SelectedValueChanged -= SomeValuerChanged;
 
             Frequency_ComboBox.SelectedIndex = 9;
             Filter_Gain.SelectedIndex = 0;
             PGA_Gain.SelectedIndex=0;
-
+            CurrentAmpGains.SelectedIndex = 0;
+            SecondAmpGains.SelectedIndex = 0;
 
             Frequency_ComboBox.SelectedValueChanged += SomeValuerChanged;
             Filter_Gain.SelectedValueChanged += SomeValuerChanged;
             PGA_Gain.SelectedValueChanged += SomeValuerChanged;
+            CurrentAmpGains.SelectedValueChanged += SomeValuerChanged;
+            SecondAmpGains.SelectedValueChanged += SomeValuerChanged;
+
 
             AllCustomEvents.Instance.AI_Channel_DigitalParameterChange_Started += WritingStarted;
             AllCustomEvents.Instance.AI_Channel_DigitalParameterChange_Finished += WritingFinished;
@@ -63,7 +68,9 @@ namespace FANS
             int frequency = Convert.ToInt32(Frequency_ComboBox.Text.Replace("kHz", ""));
             int FilterGain = Convert.ToInt32(Filter_Gain.Text);
             int PGAGain = Convert.ToInt32(PGA_Gain.Text);
-            _AI_Parameters.ChangeChannelParams(frequency, FilterGain, PGAGain, _numberOfSelectedChannel(), HomeMadeAmplifier_CheckBox.Checked);
+            long currentAmpGain = Convert.ToInt64(CurrentAmpGains.Text);
+            long secondAmpGain = Convert.ToInt64(SecondAmpGains.Text);
+            _AI_Parameters.ChangeChannelParams(frequency, FilterGain, PGAGain, _numberOfSelectedChannel(), HomeMadeAmplifier_CheckBox.Checked, currentAmpGain,secondAmpGain);
             
 
         }

@@ -8,20 +8,23 @@ namespace FANS.classes
     class ChannelParamsToSet
     {
         
-        public ChannelParamsToSet(int Freq, int FiltGain, int Pgagain, int channel_Number, bool homemade_Amplifier)
+        public ChannelParamsToSet(int Freq, int FiltGain, int Pgagain, int channel_Number, bool homemade_Amplifier, long currentAmpGain, long secondAmpGain )
         {
             this.freq = Freq;
             this.filt_gain = FiltGain;
             this.pga_gain = Pgagain;
             this.channelNumber = channel_Number;
             this.homemadeAmplifier = homemade_Amplifier;
+            this.currentAmpGain = currentAmpGain;
+            this.secondAmpGain = secondAmpGain;
         }
         public int freq;
         public int filt_gain;
         public int pga_gain;
         public bool homemadeAmplifier;
         public int channelNumber;
-        
+        public long currentAmpGain;
+        public long secondAmpGain;
         
     }
     class AI_Channel_Parameters
@@ -44,9 +47,9 @@ namespace FANS.classes
                 _Queue.RemoveAt(j);
             _Queue.Add(Channel_Params);
         }
-        public void ChangeChannelParams(int freq, int filter_Gain, int PGA_gain, int channelNumber, bool homemadeAmp)
+        public void ChangeChannelParams(int freq, int filter_Gain, int PGA_gain, int channelNumber, bool homemadeAmp, long currentAmpGain, long secondAmpGain)
         {
-            this._Queue.Add(new ChannelParamsToSet(freq, filter_Gain, PGA_gain, channelNumber, homemadeAmp));
+            this._Queue.Add(new ChannelParamsToSet(freq, filter_Gain, PGA_gain, channelNumber, homemadeAmp,currentAmpGain,secondAmpGain));
             _ChangeChannelParamsInThread(this, null);
         }
         private void _ChangeChannelParamsInThread(object sender, EventArgs e)
@@ -81,6 +84,8 @@ namespace FANS.classes
             {
                 ImportantConstants.K_Ampl_first_Channel = par.filt_gain * par.pga_gain;
                 if (par.homemadeAmplifier) ImportantConstants.K_Ampl_first_Channel *= 178;
+                else ImportantConstants.K_Ampl_first_Channel *= par.currentAmpGain;
+                ImportantConstants.K_Ampl_first_Channel *= par.secondAmpGain;
             }
 
         }

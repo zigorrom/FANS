@@ -15,6 +15,8 @@ namespace FANS.classes
         private ProgrammableFilter _Filter;
         private bool _isAC;
         public bool HomemadeAmplifier;
+        private long currentAmpGain;
+        private long secondAmpGain;
         public AI_Channel_Latch(int ChannelNumber)
         {
             if ((ChannelNumber < 1) && (ChannelNumber > 4)) throw new Exception("incorrect channel number" + ChannelNumber);
@@ -32,7 +34,16 @@ namespace FANS.classes
             _PGA = new ProgrammableGainAmplifier();
             _Filter = new ProgrammableFilter();
         }
-
+        public long CurrentAmpGain
+        {
+            set { currentAmpGain = value; }
+            get { return currentAmpGain; }
+        }
+        public long SecondAmpGain
+        {
+            get { return secondAmpGain; }
+            set { secondAmpGain = value; }
+        }
         public int PGA_Gain
         {
             set
@@ -75,12 +86,14 @@ namespace FANS.classes
             SelectChannel();
             Latch_Enabled.Pulse();
         }
-        public void SaveValuesToLatch(int Frequency, int FilterGain, int PGA_Gain, bool homemadeAmplifier)
+        public void SaveValuesToLatch(int Frequency, int FilterGain, int PGA_Gain, bool homemadeAmplifier,long currentAmpGain, long secondAmpGain)
         {
             this._PGA.Gain = PGA_Gain;
             this._Filter.Gain = FilterGain;
             this._Filter.Frequency = Frequency;
             this.HomemadeAmplifier=homemadeAmplifier;
+            this.secondAmpGain = secondAmpGain;
+            this.currentAmpGain = currentAmpGain;
             SelectChannel();
             Latch_Enabled.Pulse();
         }

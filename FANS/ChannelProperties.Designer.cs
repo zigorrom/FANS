@@ -44,6 +44,10 @@
             this.HomeMadeAmplifier_CheckBox = new System.Windows.Forms.CheckBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.label6 = new System.Windows.Forms.Label();
+            this.CurrentAmpGains = new System.Windows.Forms.ComboBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.SecondAmpGains = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -245,7 +249,7 @@
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 170);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 235);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(163, 22);
             this.statusStrip1.TabIndex = 10;
@@ -257,11 +261,78 @@
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(36, 17);
             this.toolStripStatusLabel1.Text = "ready";
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(3, 171);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(83, 13);
+            this.label6.TabIndex = 11;
+            this.label6.Text = "Current Amplifier";
+            // 
+            // CurrentAmpGains
+            // 
+            this.CurrentAmpGains.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CurrentAmpGains.FormattingEnabled = true;
+            this.CurrentAmpGains.Items.AddRange(new object[] {
+            "10E1",
+            "10E2",
+            "10E3",
+            "10E4",
+            "10E5",
+            "10E6",
+            "10E7",
+            "10E8",
+            "10E9",
+            "10E10",
+            "10E11"});
+            this.CurrentAmpGains.Location = new System.Drawing.Point(92, 168);
+            this.CurrentAmpGains.Name = "CurrentAmpGains";
+            this.CurrentAmpGains.Size = new System.Drawing.Size(54, 21);
+            this.CurrentAmpGains.TabIndex = 12;
+            this.CurrentAmpGains.SelectedValueChanged += new System.EventHandler(this.SomeValuerChanged);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(3, 198);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(86, 13);
+            this.label7.TabIndex = 13;
+            this.label7.Text = "Second Amplifier";
+            // 
+            // SecondAmpGains
+            // 
+            this.SecondAmpGains.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.SecondAmpGains.FormattingEnabled = true;
+            this.SecondAmpGains.Items.AddRange(new object[] {
+            "1",
+            "2",
+            "5",
+            "10",
+            "20",
+            "50",
+            "100",
+            "200",
+            "500",
+            "1000",
+            "2000",
+            "5000"});
+            this.SecondAmpGains.Location = new System.Drawing.Point(90, 195);
+            this.SecondAmpGains.Name = "SecondAmpGains";
+            this.SecondAmpGains.Size = new System.Drawing.Size(56, 21);
+            this.SecondAmpGains.TabIndex = 14;
+            this.SecondAmpGains.SelectedValueChanged += new System.EventHandler(this.SomeValuerChanged);
+            // 
             // ChannelProperties
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(163, 192);
+            this.ClientSize = new System.Drawing.Size(163, 257);
+            this.Controls.Add(this.SecondAmpGains);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.CurrentAmpGains);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.HomeMadeAmplifier_CheckBox);
             this.Controls.Add(this.label5);
@@ -304,5 +375,9 @@
         private System.Windows.Forms.CheckBox HomeMadeAmplifier_CheckBox;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.ComboBox CurrentAmpGains;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.ComboBox SecondAmpGains;
     }
 }
