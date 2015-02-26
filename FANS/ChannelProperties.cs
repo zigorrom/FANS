@@ -68,8 +68,8 @@ namespace FANS
             int frequency = Convert.ToInt32(Frequency_ComboBox.Text.Replace("kHz", ""));
             int FilterGain = Convert.ToInt32(Filter_Gain.Text);
             int PGAGain = Convert.ToInt32(PGA_Gain.Text);
-            long currentAmpGain = Convert.ToInt64(CurrentAmpGains.Text);
-            long secondAmpGain = Convert.ToInt64(SecondAmpGains.Text);
+            long currentAmpGain = (long)Double.Parse(CurrentAmpGains.Text);
+            long secondAmpGain = (long)Double.Parse(SecondAmpGains.Text);
             _AI_Parameters.ChangeChannelParams(frequency, FilterGain, PGAGain, _numberOfSelectedChannel(), HomeMadeAmplifier_CheckBox.Checked, currentAmpGain,secondAmpGain);
             
 

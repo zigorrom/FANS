@@ -275,17 +275,17 @@
             this.CurrentAmpGains.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.CurrentAmpGains.FormattingEnabled = true;
             this.CurrentAmpGains.Items.AddRange(new object[] {
-            "10E1",
-            "10E2",
-            "10E3",
-            "10E4",
-            "10E5",
-            "10E6",
-            "10E7",
-            "10E8",
-            "10E9",
-            "10E10",
-            "10E11"});
+            "10e1",
+            "10e2",
+            "10e3",
+            "10e4",
+            "10e5",
+            "10e6",
+            "10e7",
+            "10e8",
+            "10e9",
+            "10e10",
+            "10e11"});
             this.CurrentAmpGains.Location = new System.Drawing.Point(92, 168);
             this.CurrentAmpGains.Name = "CurrentAmpGains";
             this.CurrentAmpGains.Size = new System.Drawing.Size(54, 21);
