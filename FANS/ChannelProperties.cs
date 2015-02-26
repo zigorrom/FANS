@@ -87,6 +87,13 @@ namespace FANS
             toolStripStatusLabel1.Text = "Waiting";
             writeDataToChannel();
         }
+        private void HomemadeAmpCheckedChanged(object sender, EventArgs e)
+        {
+            if (HomeMadeAmplifier_CheckBox.Checked)
+                CurrentAmpGains.Enabled = false;
+            else CurrentAmpGains.Enabled = true;
+            SomeValuerChanged(sender, e);
+        }
 
         private void ChannelProperties_Load(object sender, EventArgs e)
         {

@@ -243,7 +243,7 @@
             this.HomeMadeAmplifier_CheckBox.Size = new System.Drawing.Size(15, 14);
             this.HomeMadeAmplifier_CheckBox.TabIndex = 9;
             this.HomeMadeAmplifier_CheckBox.UseVisualStyleBackColor = true;
-            this.HomeMadeAmplifier_CheckBox.CheckedChanged += new System.EventHandler(this.SomeValuerChanged);
+            this.HomeMadeAmplifier_CheckBox.CheckedChanged += new System.EventHandler(this.HomemadeAmpCheckedChanged);
             // 
             // statusStrip1
             // 
