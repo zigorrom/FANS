@@ -275,6 +275,7 @@
             this.CurrentAmpGains.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.CurrentAmpGains.FormattingEnabled = true;
             this.CurrentAmpGains.Items.AddRange(new object[] {
+            "1",
             "10e1",
             "10e2",
             "10e3",
