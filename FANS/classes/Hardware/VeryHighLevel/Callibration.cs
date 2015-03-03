@@ -335,7 +335,7 @@ namespace FANS.classes
             VisualizationForm.Show();
             m_ProcessedFFTs = new PointPairList();
             MakeNoiseMeasurements();
-            m_HomemadeAmplifierNoise = m_ProcessedFFTs;
+            m_HomemadeAmplifierNoise = m_ProcessedFFTs.Subtract(m_NoiseBoxNoise);
             //m_HomemadeAmplifierNoise = new PointPairList();
             //for (int i = 0; i < 100; i++)
             //{
@@ -349,7 +349,7 @@ namespace FANS.classes
             VisualizationForm.Show();
             m_ProcessedFFTs = new PointPairList();
             MakeNoiseMeasurements();
-            m_StanfordAmplifierNoise = m_ProcessedFFTs;
+            m_StanfordAmplifierNoise = m_ProcessedFFTs.Subtract(m_NoiseBoxNoise);
             //m_StanfordAmplifierNoise = new PointPairList();
             //for (int i = 0; i < 100; i++)
             //{
