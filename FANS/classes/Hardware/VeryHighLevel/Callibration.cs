@@ -199,8 +199,8 @@ namespace FANS.classes
         private PointPairList m_ProcessedFFTs;
         [NonSerialized]
         private int m_AveragedSpectraCounter;
-
-
+        [NonSerialized]
+        NoiseVisualizerForm VisualizationForm;
         private void MakeFFTOfQueue()
         {
             while ((m_QueueToGetProcessed.Count != 0) && MeasurementThread.MeasurementInProgress && (m_AveragedSpectraCounter <= AveragingForCalibration))
@@ -282,16 +282,25 @@ namespace FANS.classes
             m_FFTprocessing = new Thread(new ThreadStart(MakeFFTOfQueue));
             m_FFTprocessing.Priority = ThreadPriority.Highest;
             m_Channels = AI_Channels.Instance;
-            var VisualizationForm = new NoiseVisualizerForm();
 
-
+            
+            var SubscribeAndShow = new Action<NoiseVisualizerForm>(x => {
+                x.SubscribeForNoiseSpectra();
+                x.SubscribeForStatusMessages();
+                x.Show();
+            });
+            var DisposeAndHide = new Action<NoiseVisualizerForm>(x =>
+            {
+                x.UnsubscribeFromNoiseSpectra();
+                x.UnsubscribeFromStatusMessages();
+                x.Hide();
+                x.Dispose();
+             });
 
             var caption = "Callibration";
             if (MessageBox.Show("Please shortcut the DAQ`s input and press OK", caption, MessageBoxButtons.OK) != DialogResult.OK)
                 throw new Exception("cannot continue calibration. Ok was not pressed");
-            VisualizationForm.SubscribeForNoiseSpectra();
-            VisualizationForm.SubscribeForStatusMessages();
-            VisualizationForm.Show();
+            InvokeForm(SubscribeAndShow);
 
             m_ProcessedFFTs = new PointPairList();
             MakeNoiseMeasurements();
@@ -308,9 +317,7 @@ namespace FANS.classes
             if (MessageBox.Show("Please shortcut the NoiseBoxs`s input, connect it`s out to DAQ in and press OK", caption, MessageBoxButtons.OK) != DialogResult.OK)
                 throw new Exception("cannot continue calibration. Ok was not pressed");
 
-            VisualizationForm.SubscribeForNoiseSpectra();
-            VisualizationForm.SubscribeForStatusMessages();
-            VisualizationForm.Show();
+            InvokeForm(SubscribeAndShow);
             m_ProcessedFFTs = new PointPairList();
             MakeNoiseMeasurements();
             m_NoiseBoxNoise = m_ProcessedFFTs;
@@ -322,9 +329,7 @@ namespace FANS.classes
 
             if (MessageBox.Show("Please shortcut the HomemadeAmp`s input, connect it`s out to DAQ in and press OK", caption, MessageBoxButtons.OK) != DialogResult.OK)
                 throw new Exception("cannot continue calibration. Ok was not pressed");
-            VisualizationForm.SubscribeForNoiseSpectra();
-            VisualizationForm.SubscribeForStatusMessages();
-            VisualizationForm.Show();
+            InvokeForm(SubscribeAndShow);
             m_ProcessedFFTs = new PointPairList();
             MakeNoiseMeasurements();
             m_HomemadeAmplifierNoise = m_ProcessedFFTs.Subtract(m_NoiseBoxNoise);
@@ -336,9 +341,7 @@ namespace FANS.classes
 
             if (MessageBox.Show("Please shortcut the Stanford`s input, connect it`s out to DAQ in and press OK", caption, MessageBoxButtons.OK) != DialogResult.OK)
                 throw new Exception("cannot continue calibration. Ok was not pressed");
-            VisualizationForm.SubscribeForNoiseSpectra();
-            VisualizationForm.SubscribeForStatusMessages();
-            VisualizationForm.Show();
+            InvokeForm(SubscribeAndShow);
             m_ProcessedFFTs = new PointPairList();
             MakeNoiseMeasurements();
             m_StanfordAmplifierNoise = m_ProcessedFFTs.Subtract(m_NoiseBoxNoise);
@@ -347,9 +350,7 @@ namespace FANS.classes
             //{
             //    m_StanfordAmplifierNoise.Add(i, i * 2);
             //}
-            VisualizationForm.Hide();
-            VisualizationForm.Dispose();
-            VisualizationForm = null;
+            InvokeForm(DisposeAndHide);
             Serialize();
             MessageBox.Show("Calibration completed");
         }
@@ -364,13 +365,19 @@ namespace FANS.classes
             else
                 AllCustomEvents.Instance.MeasurementFinished -= Calibrate;
 
-
+            VisualizationForm = new NoiseVisualizerForm();
             MeasurementThread.Instance.StartThread(CalibrationProcess);
             
 
         }
 
-        
+        private void InvokeForm(Action<NoiseVisualizerForm> action)
+        {
+            if(VisualizationForm.InvokeRequired)
+            {
+                VisualizationForm.Invoke(action,VisualizationForm);
+            }
+        }
 
         public PointPairList GetPureDeviceNoise(PointPairList MeasuredPSD, bool HomemadeAmplifierAsPreamp,double HomemadeAmpGain /*, bool CurrentAmpAsPreamp, double CurrentAmpGain*/,bool StanfordAmpAsSecondary, double StanfordAmpGain,int FilterGain,int PGAGain)
         {
