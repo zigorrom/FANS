@@ -52,8 +52,9 @@
     <StartupObject>FANS.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FourierTransformProvider">
-      <HintPath>..\..\Fourier\FourierTransformProvider\FourierTransformProvider\bin\Debug\FourierTransformProvider.dll</HintPath>
+    <Reference Include="FourierTransformProvider, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>ThirdPartyLibs\FourierTransformProvider.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -65,8 +66,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="ZedGraph">
-      <HintPath>..\..\zedgraph_dll_v5.1.5\ZedGraph.dll</HintPath>
+    <Reference Include="ZedGraph, Version=5.1.5.28844, Culture=neutral, PublicKeyToken=02a83cbd123fcd60, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>ThirdPartyLibs\ZedGraph.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
