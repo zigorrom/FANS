@@ -127,6 +127,12 @@
     <Compile Include="classes\Hardware\VeryHighLevel\ApplyingVoltage.cs" />
     <Compile Include="classes\Hardware\VeryHighLevel\Callibration.cs" />
     <Compile Include="classes\Hardware\VeryHighLevel\NoiseSpectraMeasurement.cs" />
+    <Compile Include="classes\Hardware\VeryHighLevel\NoiseVisualizerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="classes\Hardware\VeryHighLevel\NoiseVisualizerForm.Designer.cs">
+      <DependentUpon>NoiseVisualizerForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="classes\Hardware\VeryHighLevel\TimeTracesAcquisition.cs" />
     <Compile Include="classes\Hardware\VeryHighLevel\VoltageMeasurement.cs" />
     <Compile Include="classes\ImportantConstants.cs" />
@@ -190,6 +196,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ChannelProperties.resx">
       <DependentUpon>ChannelProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="classes\Hardware\VeryHighLevel\NoiseVisualizerForm.resx">
+      <DependentUpon>NoiseVisualizerForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>

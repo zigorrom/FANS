@@ -181,7 +181,9 @@ namespace FANS.classes
                 if (result == DialogResult.No)
                     return;
             }
-             
+            
+
+
             var caption = "Callibration";
             if (MessageBox.Show("Please shortcut the DAQ`s input and press OK", caption, MessageBoxButtons.OK) != DialogResult.OK)
                 throw new Exception("cannot continue calibration. Ok was not pressed");
@@ -216,6 +218,15 @@ namespace FANS.classes
 
         public PointPairList GetPureDeviceNoise(PointPairList MeasuredPSD, bool HomemadeAmplifierAsPreamp,double HomemadeAmpGain, bool CurrentAmpAsPreamp, double CurrentAmpGain,bool StanfordAmpAsSecondary, double StanfordAmpGain)
         {
+            if (NeedCalibration)
+            {
+                var dialogRresult = MessageBox.Show("The calibrations was not done yet.\r\nDoYou want to calibrate?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (dialogRresult == DialogResult.Yes)
+                    Calibrate();
+                else
+                { throw new Exception("No calibration was done before"); }
+            }
+
             PointPairList preampNoise = new PointPairList();
             PointPairList secondaryAmpNoise = new PointPairList();
             double preampCoef = 1;
