@@ -123,6 +123,7 @@
     <Compile Include="classes\Hardware\LowLevel\DAQ_Bit.cs" />
     <Compile Include="classes\Hardware\VeryHighLevel\AI_Channel_Parameters.cs" />
     <Compile Include="classes\Hardware\VeryHighLevel\ApplyingVoltage.cs" />
+    <Compile Include="classes\Hardware\VeryHighLevel\Callibration.cs" />
     <Compile Include="classes\Hardware\VeryHighLevel\NoiseSpectraMeasurement.cs" />
     <Compile Include="classes\Hardware\VeryHighLevel\TimeTracesAcquisition.cs" />
     <Compile Include="classes\Hardware\VeryHighLevel\VoltageMeasurement.cs" />

@@ -5,6 +5,7 @@ using System.Text;
 using ZedGraph;
 using System.Threading;
 using FourierTransformProvider;
+using FANS.classes;
 
 namespace FANS.classes
 {
@@ -18,6 +19,7 @@ namespace FANS.classes
         private AdvancedFourierTransform _FFT;
         private Thread _FFT_Processing;
         private PointPairList FinalFFT;
+        private Callibration m_NoiseSetupCalibration;
         private int AveragedSpectraCounter;
         private Queue<PointPairList> QueueToGetProcessed;
         public int Averaging;
@@ -27,6 +29,7 @@ namespace FANS.classes
             _VoltageMeasurement = new VoltageMeasurement();
             _TimeTracesAcquisition = new TimeTracesAcquisition();
             _FFT = new AdvancedFourierTransform(DigitalAnalyzerNamespace.DigitalAnalyzerSpectralRange.Discret499712Freq1_1600Step1Freq1647_249856Step61);//new FFT_4Thread(18);
+            m_NoiseSetupCalibration = new Callibration(DigitalAnalyzerNamespace.DigitalAnalyzerSpectralRange.Discret499712Freq1_1600Step1Freq1647_249856Step61);
             Averaging = 100;
             SpectraPerShow = 10;
             _Channels = AI_Channels.Instance;

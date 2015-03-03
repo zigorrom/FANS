@@ -291,6 +291,7 @@
             this.CurrentAmpGains.Name = "CurrentAmpGains";
             this.CurrentAmpGains.Size = new System.Drawing.Size(54, 21);
             this.CurrentAmpGains.TabIndex = 12;
+            //this.CurrentAmpGains.SelectedIndexChanged += new System.EventHandler(this.CurrentAmpGains_SelectedIndexChanged);
             this.CurrentAmpGains.SelectedValueChanged += new System.EventHandler(this.SomeValuerChanged);
             // 
             // label7
