@@ -34,13 +34,10 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.zedGraphControl1 = new ZedGraph.ZedGraphControl();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.Start = new System.Windows.Forms.Button();
-            this.Stop = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.FolderName = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.filename_textbox = new System.Windows.Forms.TextBox();
-            this.OpenFolder = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
             this.SpectraPerShow = new System.Windows.Forms.TextBox();
@@ -48,13 +45,16 @@
             this.NumberOfSpectra = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
-            this.oscilloscope_toolstrip_rescale = new System.Windows.Forms.ToolStripButton();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.Start = new System.Windows.Forms.Button();
+            this.Stop = new System.Windows.Forms.Button();
+            this.OpenFolder = new System.Windows.Forms.Button();
+            this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
+            this.oscilloscope_toolstrip_rescale = new System.Windows.Forms.ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -134,28 +134,6 @@
             this.panel1.Size = new System.Drawing.Size(187, 101);
             this.panel1.TabIndex = 7;
             // 
-            // Start
-            // 
-            this.Start.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("Start.BackgroundImage")));
-            this.Start.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.Start.Location = new System.Drawing.Point(6, 12);
-            this.Start.Name = "Start";
-            this.Start.Size = new System.Drawing.Size(80, 85);
-            this.Start.TabIndex = 5;
-            this.Start.UseVisualStyleBackColor = true;
-            this.Start.Click += new System.EventHandler(this.Start_Click);
-            // 
-            // Stop
-            // 
-            this.Stop.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("Stop.BackgroundImage")));
-            this.Stop.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.Stop.Location = new System.Drawing.Point(92, 12);
-            this.Stop.Name = "Stop";
-            this.Stop.Size = new System.Drawing.Size(86, 85);
-            this.Stop.TabIndex = 6;
-            this.Stop.UseVisualStyleBackColor = true;
-            this.Stop.Click += new System.EventHandler(this.Stop_Click);
-            // 
             // panel2
             // 
             this.panel2.Controls.Add(this.FolderName);
@@ -194,18 +172,6 @@
             this.filename_textbox.Size = new System.Drawing.Size(124, 20);
             this.filename_textbox.TabIndex = 14;
             this.filename_textbox.Text = "Measurement.dat";
-            // 
-            // OpenFolder
-            // 
-            this.OpenFolder.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("OpenFolder.BackgroundImage")));
-            this.OpenFolder.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.OpenFolder.Location = new System.Drawing.Point(3, 3);
-            this.OpenFolder.Name = "OpenFolder";
-            this.OpenFolder.Size = new System.Drawing.Size(54, 45);
-            this.OpenFolder.TabIndex = 13;
-            this.OpenFolder.Text = "Open";
-            this.OpenFolder.UseVisualStyleBackColor = true;
-            this.OpenFolder.Click += new System.EventHandler(this.OpenFolder_Click);
             // 
             // panel3
             // 
@@ -275,6 +241,69 @@
             this.toolStrip1.TabIndex = 0;
             this.toolStrip1.Text = "toolStrip1";
             // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel1,
+            this.toolStripStatusLabel2,
+            this.toolStripProgressBar1});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 0);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(683, 27);
+            this.statusStrip1.TabIndex = 0;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 22);
+            // 
+            // toolStripStatusLabel2
+            // 
+            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(485, 22);
+            this.toolStripStatusLabel2.Spring = true;
+            // 
+            // toolStripProgressBar1
+            // 
+            this.toolStripProgressBar1.Name = "toolStripProgressBar1";
+            this.toolStripProgressBar1.Size = new System.Drawing.Size(150, 21);
+            // 
+            // Start
+            // 
+            this.Start.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("Start.BackgroundImage")));
+            this.Start.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.Start.Location = new System.Drawing.Point(6, 12);
+            this.Start.Name = "Start";
+            this.Start.Size = new System.Drawing.Size(80, 85);
+            this.Start.TabIndex = 5;
+            this.Start.UseVisualStyleBackColor = true;
+            this.Start.Click += new System.EventHandler(this.Start_Click);
+            // 
+            // Stop
+            // 
+            this.Stop.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("Stop.BackgroundImage")));
+            this.Stop.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.Stop.Location = new System.Drawing.Point(92, 12);
+            this.Stop.Name = "Stop";
+            this.Stop.Size = new System.Drawing.Size(86, 85);
+            this.Stop.TabIndex = 6;
+            this.Stop.UseVisualStyleBackColor = true;
+            this.Stop.Click += new System.EventHandler(this.Stop_Click);
+            // 
+            // OpenFolder
+            // 
+            this.OpenFolder.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("OpenFolder.BackgroundImage")));
+            this.OpenFolder.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.OpenFolder.Location = new System.Drawing.Point(3, 3);
+            this.OpenFolder.Name = "OpenFolder";
+            this.OpenFolder.Size = new System.Drawing.Size(54, 45);
+            this.OpenFolder.TabIndex = 13;
+            this.OpenFolder.Text = "Open";
+            this.OpenFolder.UseVisualStyleBackColor = true;
+            this.OpenFolder.Click += new System.EventHandler(this.OpenFolder_Click);
+            // 
             // toolStripButton2
             // 
             this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -297,35 +326,6 @@
             this.oscilloscope_toolstrip_rescale.Text = "toolStripButton1";
             this.oscilloscope_toolstrip_rescale.ToolTipText = "Rescale";
             this.oscilloscope_toolstrip_rescale.Click += new System.EventHandler(this.oscilloscope_toolstrip_rescale_Click);
-            // 
-            // statusStrip1
-            // 
-            this.statusStrip1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabel1,
-            this.toolStripStatusLabel2,
-            this.toolStripProgressBar1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 0);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(683, 27);
-            this.statusStrip1.TabIndex = 0;
-            this.statusStrip1.Text = "statusStrip1";
-            // 
-            // toolStripStatusLabel1
-            // 
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 22);
-            // 
-            // toolStripStatusLabel2
-            // 
-            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(516, 22);
-            this.toolStripStatusLabel2.Spring = true;
-            // 
-            // toolStripProgressBar1
-            // 
-            this.toolStripProgressBar1.Name = "toolStripProgressBar1";
-            this.toolStripProgressBar1.Size = new System.Drawing.Size(150, 21);
             // 
             // NoiseSpectra
             // 

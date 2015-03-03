@@ -6,6 +6,7 @@ using ZedGraph;
 using System.Threading;
 using FourierTransformProvider;
 using FANS.classes;
+using DigitalAnalyzerNamespace;
 
 namespace FANS.classes
 {
@@ -29,6 +30,9 @@ namespace FANS.classes
             _VoltageMeasurement = new VoltageMeasurement();
             _TimeTracesAcquisition = new TimeTracesAcquisition();
             _FFT = new AdvancedFourierTransform(DigitalAnalyzerNamespace.DigitalAnalyzerSpectralRange.Discret499712Freq1_1600Step1Freq1647_249856Step61);//new FFT_4Thread(18);
+            m_NoiseSetupCalibration = Callibration.GetInstance(DigitalAnalyzerSpectralRange.Discret499712Freq1_1600Step1Freq1647_249856Step61);
+            if (m_NoiseSetupCalibration.NeedCalibration)
+                m_NoiseSetupCalibration.Calibrate();
             //m_NoiseSetupCalibration = new Callibration(DigitalAnalyzerNamespace.DigitalAnalyzerSpectralRange.Discret499712Freq1_1600Step1Freq1647_249856Step61);
             Averaging = 100;
             SpectraPerShow = 10;
@@ -41,6 +45,9 @@ namespace FANS.classes
         }
         public void MakeNoiseMeasurement(object AsyncDataAcquisition)
         {
+            if (m_NoiseSetupCalibration.NeedCalibration)
+                throw new Exception("Need calibration");
+
             Agilent_DigitalOutput_LowLevel.Instance.AllToZero();
 
             _VoltageMeasurement.PerformVoltagePresiseMeasurement();
@@ -112,7 +119,8 @@ namespace FANS.classes
             if(AveragedSpectraCounter>=Averaging)
             {
                 PointPairList RawData=DividePointPairList(FinalFFT, AveragedSpectraCounter);
-                PointPairList FinalData = DividePointPairList(RawData,ImportantConstants.K_Ampl_first_Channel*ImportantConstants.K_Ampl_first_Channel);
+                //ImportantConstants
+                PointPairList FinalData = DividePointPairList(RawData, ImportantConstants.K_Ampl_first_Channel * ImportantConstants.K_Ampl_first_Channel);
                 AllCustomEvents.Instance.OnLastNoiseSpectraArrived(this, new FinalNoiseEventArgs(RawData,FinalData,"last spectra"));
             }
 
