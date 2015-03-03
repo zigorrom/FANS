@@ -83,9 +83,21 @@ namespace FANS.classes
             if (par.channelNumber == 1)
             {
                 ImportantConstants.K_Ampl_first_Channel = par.filt_gain * par.pga_gain;
-                if (par.homemadeAmplifier) ImportantConstants.K_Ampl_first_Channel *= 178;
-                else ImportantConstants.K_Ampl_first_Channel *= par.currentAmpGain;
+                ImportantConstants.PGAGain = par.pga_gain;
+                ImportantConstants.FilterGain = par.filt_gain;
+                if (par.homemadeAmplifier)
+                {
+                    ImportantConstants.HomemadeAmplifierAsPreamp = true;
+                    ImportantConstants.HomemadeAmplifierGain = 178;
+                    ImportantConstants.K_Ampl_first_Channel *= 178;
+                }
+                else
+                {
+                    ImportantConstants.K_Ampl_first_Channel *= par.currentAmpGain;
+                }
                 ImportantConstants.K_Ampl_first_Channel *= par.secondAmpGain;
+                ImportantConstants.StanfordAsSecondAmp = true;
+                ImportantConstants.StanfordAmpGain = par.secondAmpGain;
             }
 
         }

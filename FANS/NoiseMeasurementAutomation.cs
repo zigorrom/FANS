@@ -216,8 +216,8 @@ namespace FANS
                     default:
                         return;
                 }
-                ImportantConstants.K_Ampl_first_Channel = 1;
-                ImportantConstants.Rload = 5000;
+                //ImportantConstants.K_Ampl_first_Channel = 1;
+                //ImportantConstants.Rload = 5000;
                 m_OuterRange = MeasurementInputControl_1.Range;
                 m_InnerRange = MeasurementInputControl_2.Range;
 

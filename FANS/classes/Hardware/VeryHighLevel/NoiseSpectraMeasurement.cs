@@ -119,8 +119,8 @@ namespace FANS.classes
             if(AveragedSpectraCounter>=Averaging)
             {
                 PointPairList RawData=DividePointPairList(FinalFFT, AveragedSpectraCounter);
-                //ImportantConstants
-                PointPairList FinalData = DividePointPairList(RawData, ImportantConstants.K_Ampl_first_Channel * ImportantConstants.K_Ampl_first_Channel);
+               // ImportantConstants
+                PointPairList FinalData = m_NoiseSetupCalibration.GetPureDeviceNoise(RawData, ImportantConstants.HomemadeAmplifierAsPreamp, ImportantConstants.HomemadeAmplifierGain, ImportantConstants.StanfordAsSecondAmp, ImportantConstants.StanfordAmpGain, ImportantConstants.FilterGain, ImportantConstants.PGAGain);//DividePointPairList(RawData, ImportantConstants.K_Ampl_first_Channel * ImportantConstants.K_Ampl_first_Channel);
                 AllCustomEvents.Instance.OnLastNoiseSpectraArrived(this, new FinalNoiseEventArgs(RawData,FinalData,"last spectra"));
             }
 

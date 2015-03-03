@@ -20,5 +20,11 @@ namespace FANS.classes
         public static int[] ProgrammableAmplifierGains = new int[] { 1, 10, 100 };
         public static double Rload;
         public static double K_Ampl_first_Channel;
+        public static bool HomemadeAmplifierAsPreamp;
+        public static double HomemadeAmplifierGain=178;
+        public static bool StanfordAsSecondAmp;
+        public static double StanfordAmpGain;
+        public static int FilterGain;
+        public static int PGAGain;
     }
 }

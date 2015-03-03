@@ -365,7 +365,7 @@ namespace FANS.classes
 
         
 
-        public PointPairList GetPureDeviceNoise(PointPairList MeasuredPSD, bool HomemadeAmplifierAsPreamp,double HomemadeAmpGain /*, bool CurrentAmpAsPreamp, double CurrentAmpGain*/,bool StanfordAmpAsSecondary, double StanfordAmpGain)
+        public PointPairList GetPureDeviceNoise(PointPairList MeasuredPSD, bool HomemadeAmplifierAsPreamp,double HomemadeAmpGain /*, bool CurrentAmpAsPreamp, double CurrentAmpGain*/,bool StanfordAmpAsSecondary, double StanfordAmpGain,int FilterGain,int PGAGain)
         {
             if (NeedCalibration)
             {
@@ -407,7 +407,7 @@ namespace FANS.classes
                 secondaryAmpCoef = StanfordAmpGain;
             }
 
-            var result = MeasuredPSD.Subtract(m_NoiseBoxNoise).Divide(secondaryAmpCoef * secondaryAmpCoef).Subtract(secondaryAmpNoise).Divide(preampCoef * preampCoef).Subtract(preampNoise);
+            var result = MeasuredPSD.Divide(PGAGain*PGAGain* FilterGain*FilterGain).Subtract(m_NoiseBoxNoise).Divide(secondaryAmpCoef * secondaryAmpCoef).Subtract(secondaryAmpNoise).Divide(preampCoef * preampCoef).Subtract(preampNoise);
 
             return result;
             //throw new NotImplementedException();
