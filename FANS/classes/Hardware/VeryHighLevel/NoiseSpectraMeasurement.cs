@@ -43,6 +43,11 @@ namespace FANS.classes
             this._FFT_Processing = new Thread(new ThreadStart(MakeFFTOfQueue));
             this._FFT_Processing.Priority = ThreadPriority.Highest;
         }
+        public void Calibrate()
+        {
+            m_NoiseSetupCalibration.Calibrate();
+        }
+
         public void MakeNoiseMeasurement(object AsyncDataAcquisition)
         {
             if (m_NoiseSetupCalibration.NeedCalibration)
