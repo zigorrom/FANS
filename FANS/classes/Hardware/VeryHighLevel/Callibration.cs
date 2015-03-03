@@ -265,8 +265,8 @@ namespace FANS.classes
         }
 
 
-        private const int AveragingForCalibration = 20000;
-        private const int SpectraPerShow = 10;
+        private const int AveragingForCalibration = 100;
+        private const int SpectraPerShow = 5;
         private void CalibrationProcess()
         {
             if (!NeedCalibration)
