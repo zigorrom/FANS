@@ -267,17 +267,9 @@ namespace FANS.classes
 
         private const int AveragingForCalibration = 40000;
         private const int SpectraPerShow = 10;
-        public void Calibrate(object caller=null, EventArgs e=null)
+        private void CalibrationProcess()
         {
-            if (MeasurementThread.Instance.MeasurementRunning)
-            {
-                AllCustomEvents.Instance.MeasurementFinished += Calibrate;
-                MeasurementThread.Instance.MeasurementRunning = false; return;
-            }
-            else
-                AllCustomEvents.Instance.MeasurementFinished -= Calibrate;
-
-            if(!NeedCalibration)
+            if (!NeedCalibration)
             {
                 var result = MessageBox.Show("The calibrations are already done.\r\nAre You sure to continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (result == DialogResult.No)
@@ -291,7 +283,7 @@ namespace FANS.classes
             m_FFTprocessing.Priority = ThreadPriority.Highest;
             m_Channels = AI_Channels.Instance;
             var VisualizationForm = new NoiseVisualizerForm();
-            
+
 
 
             var caption = "Callibration";
@@ -304,9 +296,9 @@ namespace FANS.classes
             m_ProcessedFFTs = new PointPairList();
             MakeNoiseMeasurements();
             m_DAQnoise = m_ProcessedFFTs;
-           
-            
-            
+
+
+
             //m_DAQnoise = new PointPairList();
             //for (int i = 0; i < 100; i++)
             //{
@@ -341,7 +333,7 @@ namespace FANS.classes
             //{
             //    m_HomemadeAmplifierNoise.Add(i, i * 2);
             //}
-           
+
             if (MessageBox.Show("Please shortcut the Stanford`s input, connect it`s out to DAQ in and press OK", caption, MessageBoxButtons.OK) != DialogResult.OK)
                 throw new Exception("cannot continue calibration. Ok was not pressed");
             VisualizationForm.SubscribeForNoiseSpectra();
@@ -360,6 +352,21 @@ namespace FANS.classes
             VisualizationForm = null;
             Serialize();
             MessageBox.Show("Calibration completed");
+        }
+
+        public void Calibrate(object caller=null, EventArgs e=null)
+        {
+            if (MeasurementThread.Instance.MeasurementRunning)
+            {
+                AllCustomEvents.Instance.MeasurementFinished += Calibrate;
+                MeasurementThread.Instance.MeasurementRunning = false; return;
+            }
+            else
+                AllCustomEvents.Instance.MeasurementFinished -= Calibrate;
+
+
+            MeasurementThread.Instance.StartThread(CalibrationProcess);
+            
 
         }
 
