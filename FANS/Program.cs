@@ -19,7 +19,7 @@ namespace FANS
             //Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new Main());
             var a = FANS.classes.Callibration.GetInstance(DigitalAnalyzerNamespace.DigitalAnalyzerSpectralRange.Discret499712Freq1_1600Step1Freq1647_249856Step61);
-            //a.Calibrate();
+            a.Calibrate();
         }
     }
 }
